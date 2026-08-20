@@ -23,13 +23,13 @@ page at `/projects/<filename>`; set `listed: false` to keep it off the home page
 
 ## Résumé
 
-`resume/main.tex` is the public source. It intentionally omits a postal address. Rebuild and
+`resume/qresume0.tex` is the public source. It intentionally omits a postal address. Rebuild and
 publish the downloadable copy with:
 
 ```sh
 mkdir -p tmp/pdfs
-tectonic --outdir tmp/pdfs resume/main.tex
-cp tmp/pdfs/main.pdf public/resume.pdf
+tectonic --outdir tmp/pdfs resume/qresume0.tex
+cp tmp/pdfs/qresume0.pdf public/resume.pdf
 ```
 
 Only `public/resume.pdf` is deployed. Generated and legacy PDFs under `resume/` are ignored.
