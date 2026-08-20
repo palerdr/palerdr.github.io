@@ -36,6 +36,6 @@ Only `public/resume.pdf` is deployed. Generated and legacy PDFs under `resume/` 
 
 ## Deploy
 
-GitHub Actions deploys every push to `main` to GitHub Pages:
+GitHub Actions deploys every push to `main` to the account-level GitHub Pages site:
 
-<https://palerdr.github.io/jc-personal/>
+<https://palerdr.github.io/>

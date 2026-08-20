@@ -4,8 +4,8 @@ export const profile = {
   name: 'James Cenawood',
   tagline: 'I obsess over problems.',
   description:
-    'Cornell CS. I take problems people reason about informally, make them precise enough to '
-    + 'compute with, then check the answer.',
+    'James Cenawood is a Cornell computer science student building rigorous systems in data '
+    + 'science, AI, optimization, and mathematical modeling.',
   blurb: [
     'CS at Cornell, currently a data science intern at Northwell Health.',
     'My work has one shape. Take something people reason about informally (a gambling game from ' +

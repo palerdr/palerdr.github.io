@@ -12,7 +12,7 @@ const projects = (await getCollection('projects', ({ data }) => data.listed)).so
 );
 ---
 
-<Base>
+<Base title={`${profile.name} — Computer Science & Data Science Portfolio`}>
   <ClockFace />
 
   <Section id="intro" num="01" label="Intro">
