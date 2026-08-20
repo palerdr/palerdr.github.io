@@ -136,12 +136,20 @@ const panel = `panel-${entry.id}`;
   }
 
   .award {
+    display: inline-flex;
+    align-items: center;
     justify-self: start;
     margin-top: 0.35rem;
-    color: var(--ink-faint);
-    font-size: 0.6875rem;
+    max-width: 100%;
+    padding: 0.35rem 0.65rem 0.3rem;
+    border-left: 3px solid var(--leap);
+    background: var(--paper-deep);
+    color: var(--ink);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.4;
     text-transform: none;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.025em;
   }
 
   .chevron {
