@@ -148,8 +148,6 @@
   const settle = (anims: (Animation | null)[]) =>
     Promise.allSettled(anims.filter(Boolean).map((a) => a!.finished));
 
-  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
   async function playIn(variant: Variant, from: number) {
     const stage = q<HTMLElement>('[data-stage]');
     if (!stage) return;

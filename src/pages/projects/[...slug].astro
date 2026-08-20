@@ -20,7 +20,15 @@ const { entry } = Astro.props;
 const { title, tagline, award, year, stack, stats, links } = entry.data;
 const { Content } = await render(entry);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const homeProjects = `${base}/#projects`;
+const homeClock = `${base}/`;
+
+const clockAngles: Record<string, number> = {
+  northwell: 60,
+  'surpassing-the-leader': 240,
+  algosplit: 300,
+};
+const returnAngle = clockAngles[entry.id] ?? 0;
+const returnTransition = entry.id === 'surpassing-the-leader' ? 'leap' : 'sweep';
 
 /** The dial is the commit mechanic of this specific game, so it only belongs here. */
 const showDial = entry.id === 'surpassing-the-leader';
@@ -30,48 +38,54 @@ const showCollapse = entry.id === 'surpassing-the-leader';
 
 <Base title={`${title} — ${profile.name}`} description={tagline}>
   <article class="wrap">
-    <header>
-      <p class="back mono"><a href={homeProjects}>← All projects</a></p>
-      <h1>{title}</h1>
-      <p class="tagline">{tagline}</p>
+    <header class="project-header">
+      <p class="back mono">
+        <a href={homeClock} data-angle={returnAngle} data-transition={returnTransition}>← Back to clock</a>
+      </p>
+      <div class="heading-line">
+        <h1>{title}</h1>
+        <p class="tagline">{tagline}</p>
+      </div>
       {award && <p class="award mono">{award}</p>}
 
-      <dl class="facts">
-        <div>
-          <dt class="mono kicker">Year</dt>
-          <dd>{year}</dd>
-        </div>
-        <div>
-          <dt class="mono kicker">Built with</dt>
-          <dd>{stack.join(' · ')}</dd>
-        </div>
-      </dl>
+      <div class="overview">
+        <dl class="facts">
+          <div>
+            <dt class="mono kicker">Year</dt>
+            <dd>{year}</dd>
+          </div>
+          <div>
+            <dt class="mono kicker">Built with</dt>
+            <dd>{stack.join(' · ')}</dd>
+          </div>
+        </dl>
+
+        {
+          links.length > 0 && (
+            <ul class="links mono">
+              {links.map((l) => (
+                <li><a href={l.href}>{l.label} ↗</a></li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
 
       {
-        links.length > 0 && (
-          <p class="links mono">
-            {links.map((l) => (
-              <a href={l.href}>{l.label} ↗</a>
+        !showCollapse && stats.length > 0 && (
+          <dl class="stats">
+            {stats.map((s) => (
+              <div class="plate">
+                <dt class="value">{s.value}</dt>
+                <dd class="label">{s.label}</dd>
+              </div>
             ))}
-          </p>
+          </dl>
         )
       }
     </header>
 
     {showCollapse && <Collapse />}
-
-    {
-      !showCollapse && stats.length > 0 && (
-        <dl class="stats" data-reveal>
-          {stats.map((s) => (
-            <div class="plate">
-              <dt class="value">{s.value}</dt>
-              <dd class="label">{s.label}</dd>
-            </div>
-          ))}
-        </dl>
-      )
-    }
 
     {
       showDial && (
@@ -86,7 +100,7 @@ const showCollapse = entry.id === 'surpassing-the-leader';
     </div>
 
     <p class="foot mono">
-      <a href={homeProjects}>← All projects</a>
+      <a href={homeClock} data-angle={returnAngle} data-transition={returnTransition}>← Back to clock</a>
     </p>
   </article>
 </Base>
@@ -94,6 +108,10 @@ const showCollapse = entry.id === 'surpassing-the-leader';
 <style>
   article {
     padding-block: clamp(2.5rem, 7vw, 5rem) 0;
+  }
+
+  .project-header {
+    max-width: 50rem;
   }
 
   .back,
@@ -119,14 +137,22 @@ const showCollapse = entry.id === 'surpassing-the-leader';
 
   h1 {
     font-size: var(--step-3);
-    margin-top: 1.75rem;
     max-width: 20ch;
   }
 
+  .heading-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1.25rem;
+    margin-top: 1.75rem;
+  }
+
   .tagline {
+    flex: 1 1 24rem;
     font-size: var(--step-1);
     color: var(--ink-dim);
-    margin: 0.6rem 0 0;
+    margin: 0;
     max-width: 44ch;
   }
 
@@ -151,15 +177,34 @@ const showCollapse = entry.id === 'surpassing-the-leader';
     font-size: 0.6875rem;
   }
 
+  .overview {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem 1.75rem;
+    margin-top: 2.25rem;
+    padding-block: 0.85rem;
+    border-block: 1px solid var(--line);
+  }
+
   .facts {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    gap: 1.25rem 2.5rem;
-    margin: 2.25rem 0 1.25rem;
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem 1.75rem;
+    margin: 0;
+  }
+
+  .facts > div {
+    display: inline-flex;
+    gap: 0.45rem;
+    align-items: baseline;
   }
 
   .facts dt {
-    margin-bottom: 0.4rem;
+    margin: 0;
+    white-space: nowrap;
   }
 
   .facts dd {
@@ -173,6 +218,9 @@ const showCollapse = entry.id === 'surpassing-the-leader';
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem 1.75rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
     text-transform: none;
     letter-spacing: 0.03em;
   }
@@ -192,27 +240,32 @@ const showCollapse = entry.id === 'surpassing-the-leader';
   .stats {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem 4rem;
-    margin: 2.75rem 0;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--line);
+    gap: 1rem 2.5rem;
+    margin: 1.5rem 0 0;
   }
 
   .plate {
+    display: flex;
+    flex: 1 1 22rem;
+    align-items: baseline;
+    gap: 0.65rem;
     min-width: 0;
-    max-width: 22rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
   }
 
   .value {
+    flex: none;
     font-size: var(--step-2);
     font-weight: 700;
     line-height: 1.1;
   }
 
   .label {
+    flex: 1;
     display: inline-block;
     max-width: 100%;
-    margin: 0.45rem 0 0;
+    margin: 0;
     padding: 0.35rem 0.65rem 0.3rem;
     border-left: 3px solid var(--leap);
     background: var(--paper-deep);
@@ -279,4 +332,5 @@ const showCollapse = entry.id === 'surpassing-the-leader';
     padding: 0.08em 0.35em;
     color: var(--ink);
   }
+
 </style>
