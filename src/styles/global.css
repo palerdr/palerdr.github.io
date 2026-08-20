@@ -1,0 +1,192 @@
+/* Registered so the conic-gradient wipe angles are animatable. */
+@property --sweep {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --from {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+:root {
+  /* Ground. White, and nothing sits on a different white. */
+  --paper: #ffffff;
+  --paper-deep: #f4f4f2;
+  --paper-lift: #ffffff;
+
+  --surface-strong: #ffffff;
+
+  /* Type. Structure comes from weight and grey, not from colour. */
+  --ink: #0a0a0a;
+  --ink-dim: #383838;
+  --ink-faint: #6d6d6d;
+
+  --line: #e3e3e0;
+  --line-strong: #c9c9c4;
+
+  /* Emphasis is near-black, not a hue: the page carries one accent only. */
+  --tint: #0a0a0a;
+  --leap: #c0142a;
+
+  /* Four names, one face. Components keep their semantic variable. */
+  --font-display: var(--font-body);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-body);
+  --font-mono: var(--font-body);
+
+  --measure: 34rem;
+  --page: 62rem;
+  --gutter: clamp(1.25rem, 5vw, 4rem);
+
+  --step--1: 0.8125rem;
+  --step-0: 1.125rem;
+  --step-1: 1.1875rem;
+  --step-2: clamp(1.4rem, 1.1rem + 1.1vw, 1.85rem);
+  --step-3: clamp(1.9rem, 1.4rem + 2.2vw, 2.9rem);
+  --step-4: clamp(2.4rem, 1.5rem + 4.2vw, 4.6rem);
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+  -webkit-text-size-adjust: 100%;
+  background: var(--paper);
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-body), ui-serif, Georgia, serif;
+  font-variant-ligatures: common-ligatures contextual;
+  font-size: var(--step-0);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  background: var(--paper);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), ui-serif, Georgia, serif;
+  font-weight: 700;
+  line-height: 1.14;
+  letter-spacing: normal;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0 0 1em;
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color 0.18s ease;
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 2px solid var(--tint);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: #ebebe8;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.mono {
+  font-family: var(--font-body), ui-serif, Georgia, serif;
+  font-size: var(--step--1);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.muted {
+  color: var(--ink-dim);
+}
+
+.prose {
+  max-width: var(--measure);
+}
+
+/* Not a box. A hairline rule and the space under it. */
+.slab {
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.75rem 1rem;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .js [data-reveal] {
+    transform: none;
+    transition-duration: 0.01ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,331 @@
+---
+/**
+ * The transition is a clock hand sweeping the screen. A conic mask follows the
+ * blade, so a solid pane is dragged across the viewport behind it, the page
+ * swaps under full cover, and a second sweep in the same direction uncovers it.
+ *
+ * Variants: sweep (default) and leap, which stalls at 59 seconds to strike
+ * 8:59:60 before completing.
+ */
+---
+
+<div class="stage" data-stage aria-hidden="true" transition:persist="stage">
+  <div class="pane" data-pane></div>
+  <div class="blade" data-blade></div>
+  <div class="hub" data-hub></div>
+  <p class="stamp" data-stamp><span data-stamp-text>8:59:57</span></p>
+</div>
+
+<style>
+  .stage {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    pointer-events: none;
+    display: none;
+  }
+
+  .stage[data-active] {
+    display: block;
+  }
+
+  /* Only while it is running: a full-viewport animated mask is expensive to
+     repaint, and the hint is not worth the memory the rest of the time. */
+  .stage[data-active] .pane {
+    will-change: mask-image, -webkit-mask-image;
+  }
+
+  .stage[data-active] .blade {
+    will-change: transform;
+  }
+
+  /* Solid pane, revealed by the conic mask that trails the blade. */
+  .pane {
+    position: absolute;
+    inset: 0;
+    --from: 0deg;
+    --sweep: 0deg;
+    background: var(--paper-lift);
+    -webkit-mask-image: conic-gradient(
+      from var(--from),
+      #000 0deg,
+      #000 var(--sweep),
+      transparent var(--sweep)
+    );
+    mask-image: conic-gradient(
+      from var(--from),
+      #000 0deg,
+      #000 var(--sweep),
+      transparent var(--sweep)
+    );
+  }
+
+  .stage[data-variant='leap'] .pane {
+    background: #fbf0ef;
+  }
+
+  /* No translate here: the minifier folds translate into transform, and
+     transform is reserved for the sweep rotation. */
+  .blade {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    margin-left: -1.5px;
+    width: 3px;
+    height: 150vmax;
+    border-radius: 3px;
+    transform-origin: 50% 100%;
+    transform: rotate(0deg);
+    background: var(--ink);
+  }
+
+  .stage[data-variant='leap'] .blade {
+    background: var(--leap);
+  }
+
+  .hub {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -9px 0 0 -9px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--paper-lift);
+    border: 2px solid var(--ink-faint);
+    opacity: 0;
+  }
+
+  .stamp {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: 0;
+    translate: -50% 3.5rem;
+    font-family: var(--font-mono), monospace;
+    font-size: clamp(2rem, 7.5vw, 4rem);
+    letter-spacing: 0.2em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    opacity: 0;
+  }
+
+  .stamp[data-struck] {
+    color: var(--leap);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stage {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  type Variant = 'sweep' | 'leap';
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  /** Animating a conic-gradient angle needs @property registration. */
+  const canSweep = typeof CSS !== 'undefined' && 'registerProperty' in CSS;
+
+  let running: Animation[] = [];
+
+  const q = <T extends Element>(sel: string) => document.querySelector<T>(sel);
+
+  const clear = () => {
+    for (const a of running) a.cancel();
+    running = [];
+  };
+
+  const play = (el: Element | null, frames: Keyframe[], options: KeyframeAnimationOptions) => {
+    if (!el) return null;
+    const anim = el.animate(frames, { fill: 'both', easing: 'linear', ...options });
+    running.push(anim);
+    return anim;
+  };
+
+  const settle = (anims: (Animation | null)[]) =>
+    Promise.allSettled(anims.filter(Boolean).map((a) => a!.finished));
+
+  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  async function playIn(variant: Variant, from: number) {
+    const stage = q<HTMLElement>('[data-stage]');
+    if (!stage) return;
+    clear();
+
+    stage.dataset.variant = variant;
+    stage.dataset.from = String(from);
+    stage.setAttribute('data-active', '');
+
+    const pane = q<HTMLElement>('[data-pane]');
+    const blade = q<HTMLElement>('[data-blade]');
+    const stamp = q<HTMLElement>('[data-stamp]');
+    const text = q<HTMLElement>('[data-stamp-text]');
+    stamp?.removeAttribute('data-struck');
+    pane?.style.setProperty('--from', `${from}deg`);
+
+    if (!canSweep) {
+      // No registered-property support: fall back to a plain fade.
+      pane?.style.setProperty('--sweep', '360deg');
+      await settle([play(pane, [{ opacity: 0 }, { opacity: 1 }], { duration: 320 })]);
+      return;
+    }
+
+    play(q('[data-hub]'), [{ opacity: 0 }, { opacity: 1 }], { duration: 160 });
+
+    if (variant === 'leap') {
+      // One animation, one curve, start to finish. Intermediate keyframes were
+      // the last hitch: each boundary stepped the angular velocity down
+      // discontinuously (about 20x at the sharpest), which the eye reads as a
+      // stutter even though the sweep never actually stopped. A single easing
+      // has no boundaries, so acceleration stays continuous the whole way.
+      const DUR = 2000;
+      const glide = 'cubic-bezier(.16,.8,.24,1)';
+      /** Decelerates hard but never dies: still moving at roughly 4 deg a
+       *  second as it closes, against a real second hand's 6. */
+      const arc = 'cubic-bezier(.1,.8,.2,1)';
+      /** Where that curve passes 354 degrees, i.e. 59 seconds. Solved once
+       *  rather than watched for, so nothing reads style during the sweep. */
+      const STRIKE = DUR * 0.67;
+
+      if (text) text.textContent = '8:59:59';
+
+      const arcing = [
+        play(pane, [{ '--sweep': '0deg' } as Keyframe, { '--sweep': '360deg' }], {
+          duration: DUR,
+          easing: arc,
+        }),
+        play(blade, [{ transform: `rotate(${from}deg)` }, { transform: `rotate(${from + 360}deg)` }], {
+          duration: DUR,
+          easing: arc,
+        }),
+        play(
+          stamp,
+          [
+            { opacity: 0, transform: 'scale(0.94)' },
+            { opacity: 1, transform: 'scale(1)' },
+          ],
+          { duration: 420, delay: 700, easing: glide },
+        ),
+      ];
+
+      // Struck as the blade enters the second that should not exist.
+      const strike = window.setTimeout(() => {
+        if (text) text.textContent = '8:59:60';
+        stamp?.setAttribute('data-struck', '');
+        play(
+          stamp,
+          [
+            { transform: 'scale(1)' },
+            { transform: 'scale(1.09)', offset: 0.35 },
+            { transform: 'scale(1)' },
+          ],
+          { duration: 560, easing: glide },
+        );
+      }, STRIKE);
+
+      await settle(arcing);
+      window.clearTimeout(strike);
+      return;
+    }
+
+    await settle([
+      play(pane, [{ '--sweep': '0deg' } as Keyframe, { '--sweep': '360deg' }], {
+        duration: 620,
+        easing: 'cubic-bezier(.45,0,.25,1)',
+      }),
+      play(blade, [{ transform: `rotate(${from}deg)` }, { transform: `rotate(${from + 360}deg)` }], {
+        duration: 620,
+        easing: 'cubic-bezier(.45,0,.25,1)',
+      }),
+    ]);
+  }
+
+  async function playOut() {
+    const stage = q<HTMLElement>('[data-stage]');
+    if (!stage || !stage.hasAttribute('data-active')) return;
+
+    const pane = q<HTMLElement>('[data-pane]');
+    const blade = q<HTMLElement>('[data-blade]');
+    const from = Number(stage.dataset.from ?? 0);
+
+    if (!canSweep) {
+      await settle([play(pane, [{ opacity: 1 }, { opacity: 0 }], { duration: 300 })]);
+    } else {
+      // Same rotational direction: the trailing edge chases the blade round,
+      // uncovering the new page behind it. This curve starts at speed rather
+      // than easing in: the cover sweep ends at almost zero velocity, so an
+      // ease-in here would put two stationary moments back to back and stall
+      // the blade at the handoff, which is the last place the eye caught it.
+      const leave = 'cubic-bezier(0,.6,.3,1)';
+      await settle([
+        play(
+          pane,
+          [
+            { '--from': `${from}deg`, '--sweep': '360deg' } as Keyframe,
+            { '--from': `${from + 360}deg`, '--sweep': '0deg' },
+          ],
+          { duration: 560, easing: leave },
+        ),
+        play(
+          blade,
+          [
+            { transform: `rotate(${from + 360}deg)`, opacity: 1 },
+            { transform: `rotate(${from + 720}deg)`, opacity: 0 },
+          ],
+          { duration: 560, easing: leave },
+        ),
+        play(q('[data-hub]'), [{ opacity: 1 }, { opacity: 0 }], { duration: 200, delay: 300 }),
+        play(q('[data-stamp]'), [{ opacity: 1 }, { opacity: 0 }], { duration: 200 }),
+      ]);
+    }
+
+    stage.removeAttribute('data-active');
+    clear();
+    pane?.style.removeProperty('--sweep');
+  }
+
+  declare global {
+    interface Window {
+      __stageWired?: boolean;
+    }
+  }
+
+  if (!window.__stageWired) {
+    window.__stageWired = true;
+
+    document.addEventListener('astro:before-preparation', (event) => {
+      const e = event as Event & {
+        to: URL;
+        loader: () => Promise<void>;
+        sourceElement?: Element;
+      };
+      if (reduced.matches) return;
+
+      const source = e.sourceElement?.closest<HTMLElement>('[data-angle], [data-transition]');
+      const declared = source?.dataset.transition;
+      const variant: Variant =
+        declared === 'leap' || e.to.pathname.includes('/projects/surpassing-the-leader')
+          ? 'leap'
+          : 'sweep';
+      const from = Number(source?.dataset.angle ?? 0);
+
+      const original = e.loader;
+      e.loader = async () => {
+        // Start fetching immediately and let the cover draw over it. Awaiting
+        // the sweep first meant the screen finished covering and then sat
+        // frozen until the page arrived, which is the pause that reads as a
+        // hitch partway through. Astro still swaps only once both resolve.
+        const loading = original();
+        await playIn(variant, from);
+        await loading;
+      };
+    });
+
+    document.addEventListener('astro:after-swap', () => {
+      if (!reduced.matches) void playOut();
+    });
+  }
+</script>

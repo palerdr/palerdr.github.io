@@ -1,0 +1,214 @@
+---
+import { profile, links, sections } from '../data/site';
+
+/** Section anchors only exist on the home page; deep-dive pages link back to them. */
+const siteBase = import.meta.env.BASE_URL.replace(/\/$/, '');
+const homePath = `${siteBase}/`;
+const home = Astro.url.pathname === homePath;
+const sectionBase = home ? '' : homePath;
+---
+
+<header id="top" data-nav>
+  <div class="wrap bar">
+    <a class="brand" href={homePath}>
+      <span class="seal" aria-hidden="true"></span>
+      {profile.name}
+    </a>
+
+    <nav aria-label="Sections">
+      <ul>
+        {
+          sections.map((s) => (
+            <li>
+              <a href={`${sectionBase}#${s.id}`} data-spy={s.id}>
+                <span class="mono num">{s.num}</span>
+                <span class="label">{s.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <ul class="ext mono">
+      <li><a href={links.github}>GitHub</a></li>
+      <li><a href={links.linkedin}>LinkedIn</a></li>
+      <li><a href={links.resume} data-astro-reload>Résumé</a></li>
+    </ul>
+  </div>
+</header>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--paper);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s var(--ease);
+  }
+
+  header[data-stuck] {
+    border-bottom-color: var(--line-strong);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem 2rem;
+    flex-wrap: wrap;
+    padding-block: 0.85rem;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: var(--step-1);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  /* The leap-second dot. */
+  .seal {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: var(--leap);
+    transition: scale 0.35s var(--ease);
+  }
+
+  .brand:hover .seal {
+    scale: 1.2;
+  }
+
+  nav {
+    margin-inline-end: auto;
+  }
+
+  ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  nav a {
+    position: relative;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    text-decoration: none;
+    padding-block: 0.35rem;
+    color: var(--ink-faint);
+    transition: color 0.2s var(--ease);
+  }
+
+  nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--tint);
+    scale: 0 1;
+    transform-origin: left;
+    transition: scale 0.3s var(--ease);
+  }
+
+  nav a:hover,
+  nav a[data-active] {
+    color: var(--ink);
+  }
+
+  nav a[data-active]::after {
+    scale: 1 1;
+  }
+
+  .num {
+    color: var(--ink-faint);
+    transition: color 0.2s var(--ease);
+  }
+
+  nav a[data-active] .num {
+    color: var(--tint);
+  }
+
+  .label {
+    font-size: var(--step--1);
+  }
+
+  .ext a {
+    text-decoration: none;
+    color: var(--ink-faint);
+  }
+
+  .ext a:hover {
+    color: var(--tint);
+  }
+
+  @media (max-width: 46rem) {
+    nav .label {
+      display: none;
+    }
+
+    .bar {
+      gap: 1rem;
+    }
+  }
+
+  @media (max-width: 34rem) {
+    .ext {
+      width: 100%;
+      gap: 1rem;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const header = document.querySelector<HTMLElement>('[data-nav]');
+    if (!header) return;
+
+    const spies = Array.from(header.querySelectorAll<HTMLAnchorElement>('[data-spy]'));
+    const targets = spies
+      .map((link) => document.getElementById(link.dataset.spy!))
+      .filter((el): el is HTMLElement => el !== null);
+
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
+      header.toggleAttribute('data-stuck', window.scrollY > 8);
+
+      if (targets.length === 0) return;
+
+      // The active section is the last one whose top has passed the header.
+      const line = window.scrollY + header.offsetHeight + 24;
+      let active = targets[0].id;
+      for (const section of targets) {
+        if (section.offsetTop <= line) active = section.id;
+      }
+      // At the very bottom the final section may never reach the line.
+      if (ratio > 0.995) active = targets[targets.length - 1].id;
+
+      for (const link of spies) {
+        link.toggleAttribute('data-active', link.dataset.spy === active);
+      }
+    };
+
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    addEventListener('scroll', schedule, { passive: true });
+    addEventListener('resize', schedule, { passive: true });
+    update();
+  });
+</script>

@@ -1,0 +1,345 @@
+---
+/**
+ * The opening round of Surpassing the Leader: both players commit to a second
+ * between 1 and 60 at the same time. Drag or arrow-key the hand to pick one.
+ */
+const START = 37;
+const ticks = Array.from({ length: 60 }, (_, i) => {
+  const s = i + 1;
+  const major = s % 5 === 0;
+  const rad = ((s * 6 - 90) * Math.PI) / 180;
+  const r1 = major ? 90 : 98;
+  const r2 = 106;
+  return {
+    s,
+    major,
+    x1: 120 + r1 * Math.cos(rad),
+    y1: 120 + r1 * Math.sin(rad),
+    x2: 120 + r2 * Math.cos(rad),
+    y2: 120 + r2 * Math.sin(rad),
+    lx: 120 + 76 * Math.cos(rad),
+    ly: 120 + 76 * Math.sin(rad),
+  };
+});
+---
+
+<figure class="dial" data-dial>
+  <div class="face">
+    <svg viewBox="0 0 240 240" aria-hidden="true">
+      <circle class="ring" cx="120" cy="120" r="112" />
+      <circle class="ring inner" cx="120" cy="120" r="66" />
+
+      <circle class="sweep" cx="120" cy="120" r="104" data-sweep pathLength="60" />
+
+      {
+        ticks.map((t) => (
+          <line
+            class:list={['tick', { major: t.major }]}
+            data-tick={t.s}
+            x1={t.x1}
+            y1={t.y1}
+            x2={t.x2}
+            y2={t.y2}
+          />
+        ))
+      }
+
+      {
+        ticks
+          .filter((t) => t.major)
+          .map((t) => (
+            <text class="numeral" x={t.lx} y={t.ly} dy="0.34em">
+              {t.s}
+            </text>
+          ))
+      }
+
+      <g class="hand" data-hand>
+        <polygon points="118.5,120 121.5,120 120,26" />
+      </g>
+
+      <circle class="hub" cx="120" cy="120" r="4.5" />
+    </svg>
+
+    <button
+      class="hit"
+      type="button"
+      data-hit
+      role="slider"
+      aria-label="Commit to a second between 1 and 60"
+      aria-valuemin="1"
+      aria-valuemax="60"
+      aria-valuenow={START}
+    ></button>
+
+    <div class="readout" aria-hidden="true">
+      <span class="value" data-value>{String(START).padStart(2, '0')}</span>
+      <span class="unit mono">sec</span>
+    </div>
+  </div>
+
+  <figcaption>
+    <p class="state mono" data-state>Pick a second</p>
+    <p class="note muted">
+      The opening round of <em>Surpassing the Leader</em>. Both players commit to a second between
+      1 and 60 at the same time, and neither sees the other's choice.
+    </p>
+  </figcaption>
+</figure>
+
+<style>
+  .dial {
+    margin: 0;
+    display: grid;
+    gap: 1.25rem;
+    justify-items: center;
+  }
+
+  .face {
+    position: relative;
+    width: clamp(13rem, 24vw, 18rem);
+    aspect-ratio: 1;
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+  }
+
+  .ring {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+
+  .ring.inner {
+    stroke: var(--line);
+    stroke-dasharray: 1 5;
+    stroke-linecap: round;
+  }
+
+  .sweep {
+    fill: none;
+    stroke: var(--leap);
+    stroke-width: 2;
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+    transform: rotate(-90deg);
+    transform-box: view-box;
+    transform-origin: 120px 120px;
+    transition: stroke-dashoffset 0.32s var(--ease);
+  }
+
+  .tick {
+    stroke: var(--line-strong);
+    stroke-width: 0.9;
+    transition: stroke 0.25s var(--ease), stroke-width 0.25s var(--ease);
+  }
+
+  .tick.major {
+    stroke-width: 1.5;
+  }
+
+  .tick.lit {
+    stroke: var(--tint);
+  }
+
+  .numeral {
+    fill: var(--ink-faint);
+    font-family: var(--font-mono), monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-anchor: middle;
+  }
+
+  .hand polygon {
+    fill: var(--ink);
+    stroke: none;
+  }
+
+  .hand {
+    transform-box: view-box;
+    transform-origin: 120px 120px;
+    transform: rotate(222deg);
+    transition: transform 0.32s var(--ease);
+  }
+
+  .hub {
+    fill: var(--paper-lift);
+    stroke: var(--tint);
+    stroke-width: 1.2;
+  }
+
+  /* Transparent pointer/keyboard target laid over the face. */
+  .hit {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: crosshair;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .readout {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    pointer-events: none;
+  }
+
+  .value {
+    font-family: var(--font-display), serif;
+    font-size: clamp(2.4rem, 6vw, 3.4rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .unit {
+    color: var(--ink-faint);
+    font-size: 0.6875rem;
+    margin-top: 0.35rem;
+  }
+
+  figcaption {
+    text-align: center;
+    max-width: 30ch;
+  }
+
+  .state {
+    margin: 0 0 0.5rem;
+    color: var(--tint);
+    font-size: 0.6875rem;
+  }
+
+  .dial[data-committed] .state {
+    color: var(--leap);
+  }
+
+  .dial[data-committed] .hub {
+    fill: var(--leap);
+  }
+
+  .note {
+    margin: 0;
+    font-size: var(--step--1);
+    line-height: 1.55;
+  }
+
+  .note em {
+    font-family: var(--font-serif), serif;
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const root = document.querySelector<HTMLElement>('[data-dial]');
+    if (!root) return;
+
+    const hit = root.querySelector<HTMLButtonElement>('[data-hit]')!;
+    const hand = root.querySelector<SVGGElement>('[data-hand]')!;
+    const sweep = root.querySelector<SVGCircleElement>('[data-sweep]')!;
+    const value = root.querySelector<HTMLElement>('[data-value]')!;
+    const state = root.querySelector<HTMLElement>('[data-state]')!;
+    const ticks = Array.from(root.querySelectorAll<SVGLineElement>('[data-tick]'));
+
+    let current = 37;
+    let committed: number | null = null;
+    let frame = 0;
+
+    // Unwrapped: dragging across the 60/1 boundary would otherwise spin the hand
+    // most of the way round the dial in the wrong direction.
+    let turned = current * 6;
+
+    const turnTo = (deg: number) => {
+      let delta = (((deg - turned) % 360) + 360) % 360;
+      if (delta > 180) delta -= 360;
+      turned += delta;
+      hand.style.transform = `rotate(${turned}deg)`;
+    };
+
+    const paint = (s: number) => {
+      turnTo(s * 6);
+      sweep.style.strokeDashoffset = String(60 - s);
+      value.textContent = String(s).padStart(2, '0');
+      hit.setAttribute('aria-valuenow', String(s));
+      for (const tick of ticks) {
+        tick.classList.toggle('lit', Number(tick.dataset.tick) <= s);
+      }
+    };
+
+    const set = (s: number) => {
+      const next = Math.min(60, Math.max(1, s));
+      if (next === current) return;
+      current = next;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => paint(next));
+    };
+
+    const secondAt = (event: PointerEvent) => {
+      const box = hit.getBoundingClientRect();
+      const dx = event.clientX - (box.left + box.width / 2);
+      const dy = event.clientY - (box.top + box.height / 2);
+      if (Math.hypot(dx, dy) < 8) return null;
+      let deg = (Math.atan2(dy, dx) * 180) / Math.PI + 90;
+      if (deg < 0) deg += 360;
+      const s = Math.round(deg / 6);
+      return s === 0 ? 60 : s;
+    };
+
+    const commit = (s: number) => {
+      committed = s;
+      set(s);
+      root.setAttribute('data-committed', '');
+      state.textContent = `Committed · ${String(s).padStart(2, '0')}`;
+    };
+
+    hit.addEventListener('pointermove', (event) => {
+      if (event.pointerType === 'touch') return;
+      const s = secondAt(event);
+      if (s !== null) set(s);
+    });
+
+    hit.addEventListener('pointerleave', () => {
+      if (committed !== null) set(committed);
+    });
+
+    hit.addEventListener('pointerdown', (event) => {
+      const s = secondAt(event);
+      if (s !== null) commit(s);
+    });
+
+    hit.addEventListener('click', (event) => {
+      // Keyboard activation reports no coordinates; commit whatever is showing.
+      if (event.detail === 0) commit(current);
+    });
+
+    hit.addEventListener('keydown', (event) => {
+      const step: Record<string, number> = {
+        ArrowRight: 1,
+        ArrowUp: 1,
+        ArrowLeft: -1,
+        ArrowDown: -1,
+        PageUp: 5,
+        PageDown: -5,
+      };
+      if (event.key in step) {
+        event.preventDefault();
+        set(current + step[event.key]);
+      } else if (event.key === 'Home') {
+        event.preventDefault();
+        set(1);
+      } else if (event.key === 'End') {
+        event.preventDefault();
+        set(60);
+      }
+    });
+
+    paint(current);
+  });
+</script>

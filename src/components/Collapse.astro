@@ -1,0 +1,95 @@
+---
+/**
+ * The two reductions that made Surpassing the Leader solvable. A number like
+ * 289,374,121 tells a reader nothing on its own; the ratio is the point, so the
+ * ratio is what gets drawn.
+ */
+const RATIO = 289_374_121 / 5_267_489_760;
+---
+
+<figure class="collapse" data-reveal>
+  <figcaption class="mono">What made it solvable</figcaption>
+
+  <div class="row">
+    <p class="bar-label mono">Written out directly</p>
+    <div class="bar full" style="width:100%"></div>
+    <p class="figure">5,267,489,760 <span class="muted">reachable states</span></p>
+  </div>
+
+  <div class="row">
+    <p class="bar-label mono">After the per-player quotient</p>
+    <div class="bar cut" style={`width:${(RATIO * 100).toFixed(2)}%`}></div>
+    <p class="figure">289,374,121 <span class="muted">equivalence classes</span></p>
+  </div>
+
+  <p class="note">
+    An 18.2× collapse, sorted by a potential function into <strong>1,201 layers</strong> that solve
+    in one backward sweep with no search and no reachability analysis. It turned a computation
+    projected at <strong>3.7 to 5.1 years</strong> on one core into <strong>90 minutes</strong> on
+    twelve.
+  </p>
+</figure>
+
+<style>
+  .collapse {
+    margin: 2.75rem 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  figcaption {
+    color: var(--ink-faint);
+    font-size: 0.6875rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .row {
+    margin-bottom: 1.5rem;
+  }
+
+  .bar-label {
+    margin: 0 0 0.5rem;
+    color: var(--ink-faint);
+    font-size: 0.625rem;
+    text-transform: none;
+    letter-spacing: 0.06em;
+  }
+
+  .bar {
+    height: 0.75rem;
+    min-width: 2px;
+  }
+
+  .full {
+    background: var(--line-strong);
+  }
+
+  .cut {
+    background: var(--leap);
+  }
+
+  .figure {
+    margin: 0.55rem 0 0;
+    font-size: var(--step-1);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .figure .muted {
+    font-weight: 400;
+    font-size: var(--step--1);
+    color: var(--ink-faint);
+  }
+
+  .note {
+    margin: 0;
+    max-width: var(--measure);
+    color: var(--ink-dim);
+    font-size: var(--step--1);
+    line-height: 1.6;
+  }
+
+  .note strong {
+    color: var(--ink);
+  }
+</style>

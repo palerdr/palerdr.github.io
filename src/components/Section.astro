@@ -1,0 +1,74 @@
+---
+interface Props {
+  id: string;
+  num: string;
+  label: string;
+  heading?: string;
+}
+
+const { id, num, label, heading } = Astro.props;
+---
+
+<section id={id}>
+  <div class="wrap">
+    <div class="head" data-reveal>
+      <p class="rail mono">
+        <span class="num">{num}</span>
+        <span class="dash" aria-hidden="true"></span>
+        <span class="label">{label}</span>
+      </p>
+      {heading && <h2>{heading}</h2>}
+    </div>
+    <slot />
+  </div>
+</section>
+
+<style>
+  section {
+    position: relative;
+    padding-block: clamp(3.5rem, 8vw, 7rem);
+    border-top: 1px solid var(--line);
+  }
+
+  /* Glass bead struck through the section rule, centred on the page. */
+  section::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: calc(50% - 4px);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--paper-lift);
+    border: 1px solid var(--line-strong);
+  }
+
+  .head {
+    margin-bottom: 2.75rem;
+  }
+
+  .rail {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 0 1rem;
+    color: var(--ink-faint);
+  }
+
+  .num {
+    color: var(--tint);
+  }
+
+  .dash {
+    width: 2rem;
+    height: 1px;
+    background: var(--line-strong);
+  }
+
+  /* Sits between the page headline and a card title: the reference runs two
+     levels, and card titles already occupy the lower one. */
+  h2 {
+    font-size: clamp(1.55rem, 1.1rem + 1.6vw, 2.3rem);
+    max-width: 22ch;
+  }
+</style>

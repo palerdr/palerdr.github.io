@@ -1,0 +1,269 @@
+---
+import type { GetStaticPaths } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Dial from '../../components/Dial.astro';
+import Collapse from '../../components/Collapse.astro';
+import { profile } from '../../data/site';
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const entries = await getCollection('projects', ({ data }) => data.writeup);
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+};
+
+const { entry } = Astro.props;
+const { title, tagline, award, year, stack, stats, links } = entry.data;
+const { Content } = await render(entry);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const homeProjects = `${base}/#projects`;
+
+/** The dial is the commit mechanic of this specific game, so it only belongs here. */
+const showDial = entry.id === 'surpassing-the-leader';
+/** Same page: the collapse figure says what three stat plates could not. */
+const showCollapse = entry.id === 'surpassing-the-leader';
+---
+
+<Base title={`${title} — ${profile.name}`} description={tagline}>
+  <article class="wrap">
+    <header>
+      <p class="back mono"><a href={homeProjects}>← All projects</a></p>
+      <h1>{title}</h1>
+      <p class="tagline">{tagline}</p>
+      {award && <p class="award mono">{award}</p>}
+
+      <dl class="facts">
+        <div>
+          <dt class="mono kicker">Year</dt>
+          <dd>{year}</dd>
+        </div>
+        <div>
+          <dt class="mono kicker">Built with</dt>
+          <dd>{stack.join(' · ')}</dd>
+        </div>
+      </dl>
+
+      {
+        links.length > 0 && (
+          <p class="links mono">
+            {links.map((l) => (
+              <a href={l.href}>{l.label} ↗</a>
+            ))}
+          </p>
+        )
+      }
+    </header>
+
+    {showCollapse && <Collapse />}
+
+    {
+      !showCollapse && stats.length > 0 && (
+        <dl class="stats" data-reveal>
+          {stats.map((s) => (
+            <div class="plate">
+              <dt class="value">{s.value}</dt>
+              <dd class="label">{s.label}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+
+    {
+      showDial && (
+        <div class="dial-mount" data-reveal>
+          <Dial />
+        </div>
+      )
+    }
+
+    <div class="prose body">
+      <Content />
+    </div>
+
+    <p class="foot mono">
+      <a href={homeProjects}>← All projects</a>
+    </p>
+  </article>
+</Base>
+
+<style>
+  article {
+    padding-block: clamp(2.5rem, 7vw, 5rem) 0;
+  }
+
+  .back,
+  .foot {
+    color: var(--ink-faint);
+  }
+
+  .back a,
+  .foot a {
+    text-decoration: none;
+  }
+
+  .back a:hover,
+  .foot a:hover {
+    color: var(--ink);
+  }
+
+  .foot {
+    margin: 4rem 0 0;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+  }
+
+  h1 {
+    font-size: var(--step-3);
+    margin-top: 1.75rem;
+    max-width: 20ch;
+  }
+
+  .tagline {
+    font-size: var(--step-1);
+    color: var(--ink-dim);
+    margin: 0.6rem 0 0;
+    max-width: 44ch;
+  }
+
+  .award {
+    display: inline-block;
+    color: var(--ink-faint);
+    text-transform: none;
+    letter-spacing: 0.06em;
+    font-size: 0.6875rem;
+    margin: 1.1rem 0 0;
+  }
+
+  .kicker {
+    color: var(--ink-faint);
+    font-size: 0.6875rem;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1.25rem 2.5rem;
+    margin: 2.25rem 0 1.25rem;
+  }
+
+  .facts dt {
+    margin-bottom: 0.4rem;
+  }
+
+  .facts dd {
+    margin: 0;
+    font-size: var(--step--1);
+    line-height: 1.6;
+    color: var(--ink-dim);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    text-transform: none;
+    letter-spacing: 0.03em;
+  }
+
+  .links a {
+    text-decoration: none;
+    color: var(--ink-dim);
+    border-bottom: 1px solid var(--line-strong);
+    padding-bottom: 0.15rem;
+  }
+
+  .links a:hover {
+    color: var(--ink);
+    border-bottom-color: currentColor;
+  }
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem 4rem;
+    margin: 2.75rem 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .plate {
+    min-width: 0;
+    max-width: 22rem;
+  }
+
+  .value {
+    font-size: var(--step-2);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .label {
+    margin: 0.4rem 0 0;
+    font-size: var(--step--1);
+    line-height: 1.45;
+    color: var(--ink-dim);
+  }
+
+  .dial-mount {
+    display: grid;
+    place-items: center;
+    padding: 2.5rem 0 3rem;
+    border-block: 1px solid var(--line);
+  }
+
+  .body {
+    margin-top: 3rem;
+    color: var(--ink-dim);
+    font-family: var(--font-serif), serif;
+    font-size: var(--step-1);
+    line-height: 1.6;
+  }
+
+  .body :global(h2) {
+    font-size: var(--step-2);
+    color: var(--ink);
+    margin: 3.25rem 0 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .body :global(h2:first-child) {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .body :global(strong) {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .body :global(em) {
+    color: var(--ink);
+  }
+
+  .body :global(pre) {
+    background: var(--paper-deep);
+    border: 1px solid var(--line);
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-size: var(--step--1);
+  }
+
+  .body :global(code) {
+    font-family: var(--font-mono), monospace;
+    font-size: 0.88em;
+  }
+
+  .body :global(:not(pre) > code) {
+    background: var(--paper-deep);
+    border: 1px solid var(--line);
+    padding: 0.08em 0.35em;
+    color: var(--ink);
+  }
+</style>

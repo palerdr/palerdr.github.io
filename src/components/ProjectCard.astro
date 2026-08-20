@@ -1,0 +1,279 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+  index: number;
+}
+
+const { entry, index } = Astro.props;
+const { title, tagline, summary, award, stack, stats, links, writeup } = entry.data;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const suits = ['♠', '♥', '♦', '♣'];
+const suit = suits[index % suits.length];
+const panel = `panel-${entry.id}`;
+---
+
+<article class="card" data-card data-reveal data-first={index === 0 ? '' : undefined}>
+  <span class="pip top" aria-hidden="true">{suit}</span>
+  <span class="pip bottom" aria-hidden="true">{suit}</span>
+
+  <button class="head" type="button" data-toggle aria-expanded="true" aria-controls={panel}>
+    <span class="headings">
+      <span class="title">{title}</span>
+      <span class="tagline">{tagline}</span>
+      {award && <span class="award mono">{award}</span>}
+    </span>
+    <span class="chevron" aria-hidden="true"></span>
+  </button>
+
+  <div class="panel" id={panel} data-panel>
+    <div class="panel-inner">
+      <p class="summary">{summary}</p>
+
+      {
+        stats.length > 0 && (
+          <dl class="stats">
+            {stats.map((s) => (
+              <div class="plate">
+                <dt class="value">{s.value}</dt>
+                <dd class="label muted">{s.label}</dd>
+              </div>
+            ))}
+          </dl>
+        )
+      }
+
+      <p class="stack mono">{stack.join(' · ')}</p>
+
+      <p class="links mono">
+        {writeup && <a class="primary" href={`${base}/projects/${entry.id}`}>Read the write-up →</a>}
+        {links.map((l) => <a href={l.href}>{l.label} ↗</a>)}
+      </p>
+    </div>
+  </div>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    border-top: 1px solid var(--line);
+    background: var(--paper);
+    transition: border-color 0.35s var(--ease);
+  }
+
+  .card:last-of-type {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .card:hover,
+  .card[data-open] {
+    border-top-color: var(--line-strong);
+  }
+
+  .pip {
+    position: absolute;
+    font-size: 0.9375rem;
+    line-height: 1;
+    color: var(--ink-faint);
+    pointer-events: none;
+    transition: color 0.35s var(--ease);
+  }
+
+  /* Opposite corners, the way a card carries them, but in the page gutter:
+     outside the text column, so no line of copy can ever run into one. */
+  .pip.top {
+    top: 1.6rem;
+    right: -1.9rem;
+  }
+
+  .pip.bottom {
+    bottom: 1.6rem;
+    left: -1.9rem;
+    rotate: 180deg;
+  }
+
+  .card:hover .pip,
+  .card[data-open] .pip {
+    color: var(--leap);
+  }
+
+  .head {
+    all: unset;
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    width: 100%;
+    cursor: pointer;
+    padding: 1.9rem 2.5rem 1.4rem 0;
+  }
+
+  .head:focus-visible {
+    outline: 2px solid var(--tint);
+    outline-offset: -4px;
+  }
+
+  .headings {
+    display: grid;
+    gap: 0.4rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .title {
+    font-size: var(--step-2);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .tagline {
+    font-size: var(--step-1);
+    line-height: 1.35;
+    color: var(--ink-dim);
+    max-width: 42ch;
+  }
+
+  .award {
+    justify-self: start;
+    margin-top: 0.35rem;
+    color: var(--ink-faint);
+    font-size: 0.6875rem;
+    text-transform: none;
+    letter-spacing: 0.06em;
+  }
+
+  .chevron {
+    flex: none;
+    width: 0.6rem;
+    height: 0.6rem;
+    margin-top: 0.7rem;
+    border-right: 1px solid var(--ink-dim);
+    border-bottom: 1px solid var(--ink-dim);
+    rotate: 45deg;
+    transition: rotate 0.4s var(--ease), border-color 0.3s var(--ease);
+  }
+
+  .card[data-open] .chevron {
+    rotate: 225deg;
+    border-color: var(--tint);
+  }
+
+  /* 0fr → 1fr animates cleanly and needs no measured height. */
+  .panel {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.45s var(--ease);
+  }
+
+  .card[data-collapsed] .panel {
+    grid-template-rows: 0fr;
+  }
+
+  .panel-inner {
+    overflow: hidden;
+  }
+
+  .summary {
+    max-width: var(--measure);
+    margin: 0 0 1.5rem;
+    color: var(--ink-dim);
+  }
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 3.5rem;
+    margin: 0 0 1.75rem;
+  }
+
+  .plate {
+    min-width: 0;
+    max-width: 20rem;
+  }
+
+  .value {
+    font-size: var(--step-2);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+
+  .label {
+    margin: 0.35rem 0 0;
+    font-size: var(--step--1);
+    line-height: 1.45;
+  }
+
+  .stack {
+    margin: 0 0 1.5rem;
+    max-width: var(--measure);
+    text-transform: none;
+    letter-spacing: 0.03em;
+    color: var(--ink-faint);
+    font-size: 0.75rem;
+    line-height: 1.7;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    margin: 0;
+    padding-bottom: 2.25rem;
+    text-transform: none;
+    letter-spacing: 0.03em;
+  }
+
+  .links a {
+    text-decoration: none;
+    color: var(--ink-dim);
+    border-bottom: 1px solid var(--line-strong);
+    padding-bottom: 0.15rem;
+  }
+
+  .links a:hover {
+    color: var(--ink);
+    border-bottom-color: currentColor;
+  }
+
+  .primary {
+    color: var(--ink) !important;
+    font-weight: 700;
+  }
+
+  /* Below this the gutter is too narrow to hold them: bring the top pip back
+     inside against the chevron, and drop the bottom one. */
+  @media (max-width: 56rem) {
+    .pip.top {
+      right: 0;
+    }
+
+    .pip.bottom {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    for (const card of document.querySelectorAll<HTMLElement>('[data-card]')) {
+      const toggle = card.querySelector<HTMLButtonElement>('[data-toggle]');
+      if (!toggle) continue;
+
+      const setOpen = (open: boolean) => {
+        card.toggleAttribute('data-open', open);
+        card.toggleAttribute('data-collapsed', !open);
+        toggle.setAttribute('aria-expanded', String(open));
+      };
+
+      // Markup ships expanded so the content survives without JS. Collapse all
+      // but the first once we know scripting is available.
+      setOpen(card.dataset.first !== undefined);
+
+      toggle.addEventListener('click', () => setOpen(!card.hasAttribute('data-open')));
+
+    }
+  });
+</script>

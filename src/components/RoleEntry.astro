@@ -1,0 +1,145 @@
+---
+import type { Role } from '../data/site';
+
+interface Props {
+  role: Role;
+}
+
+const { role } = Astro.props;
+---
+
+<article data-reveal>
+  <div class="meta">
+    <p class="mono dates">{role.dates}</p>
+    {role.location && <p class="mono loc">{role.location}</p>}
+  </div>
+
+  <div class="body">
+    <h3>
+      {role.orgUrl ? <a href={role.orgUrl}>{role.org}</a> : role.org}
+    </h3>
+    <p class="title">{role.title}</p>
+
+    <ul>
+      {role.bullets.map((b) => <li>{b}</li>)}
+    </ul>
+
+    {
+      role.readMore && (
+        <p class="more mono">
+          <a href={role.readMore.href}>{role.readMore.label} →</a>
+        </p>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  article {
+    display: grid;
+    grid-template-columns: minmax(9rem, 14rem) 1fr;
+    gap: 1rem 2.5rem;
+    padding-block: 2.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  article:last-of-type {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta p {
+    margin: 0 0 0.4rem;
+    color: var(--ink-faint);
+  }
+
+  .dates {
+    color: var(--tint);
+  }
+
+  h3 {
+    font-size: var(--step-2);
+  }
+
+  h3 a {
+    position: relative;
+    text-decoration: none;
+    transition: color 0.2s var(--ease);
+  }
+
+  h3 a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -0.1em;
+    width: 0;
+    height: 1px;
+    background: var(--tint);
+    transition: width 0.35s var(--ease);
+  }
+
+  h3 a:hover::after {
+    width: 100%;
+  }
+
+  .title {
+    font-size: var(--step-1);
+    color: var(--ink-faint);
+    margin: 0.3rem 0 1.25rem;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-width: var(--measure);
+  }
+
+  li {
+    position: relative;
+    margin-bottom: 1rem;
+    padding-left: 1.4rem;
+    color: var(--ink-dim);
+  }
+
+  /* A bead in place of a bullet. */
+  li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.58em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--surface-strong);
+    border: 1px solid var(--line-strong);
+  }
+
+  .more {
+    margin: 1.25rem 0 0;
+    text-transform: none;
+    letter-spacing: 0.04em;
+  }
+
+  .more a {
+    color: var(--tint);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line-strong);
+    padding-bottom: 0.15rem;
+  }
+
+  .more a:hover {
+    border-bottom-color: currentColor;
+  }
+
+  @media (max-width: 46rem) {
+    article {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    .meta {
+      display: flex;
+      gap: 1rem;
+    }
+  }
+</style>

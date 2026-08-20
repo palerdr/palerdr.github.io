@@ -1,0 +1,440 @@
+---
+import { profile } from '../data/site';
+
+/**
+ * The landing page is the clock. Each destination sits at an hour mark; hovering
+ * swings the pointer to it and clicking hands the angle to the transition, so
+ * the sweep that wipes the screen starts where the hand already is. Let go and
+ * the hand carries on ticking from that mark rather than returning to the
+ * second it left, so the face keeps time but not the same phase.
+ *
+ * TODO(james): verify against IERS Bulletin C if a leap second is announced.
+ */
+const TAI_MINUS_UTC = 37;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const MARKS = [
+  { hour: 12, label: 'Intro', href: `${base}/#intro` },
+  { hour: 2, label: 'Experience', href: `${base}/#experience` },
+  { hour: 4, label: 'Projects', href: `${base}/#projects` },
+  { hour: 6, label: 'Contact', href: `${base}/#contact` },
+  {
+    hour: 8,
+    label: 'Surpassing the Leader',
+    href: `${base}/projects/surpassing-the-leader`,
+    leap: true,
+  },
+  { hour: 10, label: 'AlgoSplit', href: `${base}/projects/algosplit` },
+];
+
+const marks = MARKS.map((m) => {
+  const rad = ((m.hour * 30 - 90) * Math.PI) / 180;
+  return {
+    ...m,
+    left: 50 + 38 * Math.cos(rad),
+    top: 50 + 38 * Math.sin(rad),
+    angle: m.hour * 30,
+  };
+});
+
+const ticks = Array.from({ length: 60 }, (_, i) => {
+  const major = i % 5 === 0;
+  const rad = ((i * 6 - 90) * Math.PI) / 180;
+  const r1 = major ? 440 : 452;
+  return {
+    major,
+    x1: 500 + r1 * Math.cos(rad),
+    y1: 500 + r1 * Math.sin(rad),
+    x2: 500 + 466 * Math.cos(rad),
+    y2: 500 + 466 * Math.sin(rad),
+  };
+});
+---
+
+<section class="clock-page">
+  <div class="dialplate" data-dialplate>
+    <svg class="engraving" viewBox="0 0 1000 1000" aria-hidden="true">
+      <circle class="rim" cx="500" cy="500" r="474" />
+      <circle class="rim thin" cx="500" cy="500" r="424" />
+      {
+        ticks.map((t) => (
+          <line class:list={['tick', { major: t.major }]} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} />
+        ))
+      }
+      <!-- The 61st second, which most clocks pretend does not exist. -->
+      <line class="leap-tick" x1="500" y1="16" x2="500" y2="78" />
+    </svg>
+
+    <svg class="hands" viewBox="0 0 1000 1000" aria-hidden="true">
+      <g data-hand="hour"><polygon points="494,500 506,500 500,266" /></g>
+      <g data-hand="minute"><polygon points="496,500 504,500 500,150" /></g>
+      <g data-hand="pointer" data-pointer>
+        <polygon points="497.5,500 502.5,500 500,96" />
+      </g>
+      <circle class="hub" cx="500" cy="500" r="13" />
+    </svg>
+
+    <div class="core">
+      <p class="who mono">{profile.name}</p>
+      <dl class="readout mono">
+        <div><dt>UTC</dt><dd data-utc>--:--:--</dd></div>
+        <div><dt>TAI − UTC</dt><dd>{TAI_MINUS_UTC} s</dd></div>
+      </dl>
+    </div>
+
+    {
+      marks.map((m) => (
+        <a
+          class:list={['mark', { leap: m.leap }]}
+          href={m.href}
+          style={`left:${m.left}%; top:${m.top}%`}
+          data-mark
+          data-angle={m.angle}
+          data-transition={m.leap ? 'leap' : 'sweep'}
+        >
+          <span class="pip" />
+          <span class="label">{m.label}</span>
+        </a>
+      ))
+    }
+  </div>
+
+  <p class="hint mono">Scroll, or pick an hour</p>
+</section>
+
+<style>
+  .clock-page {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding-block: 5rem 3rem;
+  }
+
+  /* The plate: white on white. The rim and the engraving are the whole drawing. */
+  .dialplate {
+    position: relative;
+    width: min(86vmin, 46rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid var(--line-strong);
+  }
+
+  .engraving,
+  .hands {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .rim {
+    fill: none;
+    stroke: var(--line-strong);
+    stroke-width: 2;
+  }
+
+  .rim.thin {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+
+  .tick {
+    stroke: var(--line-strong);
+    stroke-width: 1.5;
+  }
+
+  .tick.major {
+    stroke: var(--ink-faint);
+    stroke-width: 3;
+  }
+
+  .leap-tick {
+    stroke: var(--leap);
+    stroke-width: 4;
+  }
+
+  /* Hands are filled triangles, not strokes: a stroke cannot come to a point. */
+  .hands polygon {
+    stroke: none;
+  }
+
+  [data-hand] {
+    transform-box: view-box;
+    transform-origin: 500px 500px;
+  }
+
+  [data-hand='hour'] polygon {
+    fill: var(--ink-dim);
+  }
+
+  [data-hand='minute'] polygon {
+    fill: var(--ink-faint);
+  }
+
+  /* The pointer swings to whatever you are about to open. Live seconds run
+     untransitioned; only the swing to and from a mark is animated, and the
+     script sets its duration from the distance so every swing runs at one
+     speed. The curve eases both ends and never overshoots. */
+  [data-hand='pointer'] {
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  [data-hand='pointer'][data-live] {
+    transition: none;
+  }
+
+  [data-hand='pointer'] polygon {
+    fill: var(--leap);
+  }
+
+  .hub {
+    fill: var(--paper-lift);
+    stroke: var(--line-strong);
+    stroke-width: 3;
+  }
+
+  .core {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    width: 62%;
+    text-align: center;
+    display: grid;
+    justify-items: center;
+    gap: 0.9rem;
+  }
+
+  /* The only words on the dial, set like a name engraved on one. */
+  .who {
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(0.8125rem, 1.8vw, 1.0625rem);
+    letter-spacing: 0.22em;
+  }
+
+  .readout {
+    display: flex;
+    gap: 1.25rem;
+    margin: 0.3rem 0 0;
+    font-size: 0.625rem;
+  }
+
+  .readout div {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .readout dt {
+    color: var(--ink-faint);
+  }
+
+  .readout dd {
+    margin: 0;
+    color: var(--ink-dim);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+  }
+
+  /* ---- Hour marks ---- */
+
+  .mark {
+    position: absolute;
+    translate: -50% -50%;
+    display: grid;
+    justify-items: center;
+    gap: 0.45rem;
+    text-decoration: none;
+    color: var(--ink-dim);
+    width: max-content;
+    max-width: 9rem;
+    text-align: center;
+  }
+
+  .pip {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--surface-strong);
+    border: 1px solid var(--line-strong);
+    transition: background 0.25s var(--ease), border-color 0.25s var(--ease), scale 0.25s var(--ease);
+  }
+
+  .label {
+    font-family: var(--font-mono), monospace;
+    font-size: 0.625rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    line-height: 1.35;
+    padding: 0.35rem 0.5rem;
+    background: var(--paper);
+    transition: color 0.25s var(--ease);
+  }
+
+  .mark:hover,
+  .mark:focus-visible {
+    color: var(--ink);
+  }
+
+  .mark:hover .pip,
+  .mark:focus-visible .pip {
+    background: var(--tint);
+    border-color: var(--tint);
+    scale: 1.25;
+  }
+
+  .mark.leap:hover .pip,
+  .mark.leap:focus-visible .pip {
+    background: var(--leap);
+    border-color: var(--leap);
+  }
+
+  .hint {
+    position: absolute;
+    bottom: 1.6rem;
+    left: 50%;
+    translate: -50% 0;
+    margin: 0;
+    color: var(--ink-faint);
+    font-size: 0.625rem;
+  }
+
+  @media (max-width: 40rem) {
+    .dialplate {
+      width: min(94vmin, 30rem);
+    }
+
+    .mark {
+      max-width: 6rem;
+    }
+
+    .label {
+      font-size: 0.5625rem;
+      padding: 0.25rem 0.45rem;
+    }
+
+    .core {
+      width: 66%;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const plate = document.querySelector<HTMLElement>('[data-dialplate]');
+    if (!plate) return;
+
+    const hourHand = plate.querySelector<SVGGElement>('[data-hand="hour"]')!;
+    const minuteHand = plate.querySelector<SVGGElement>('[data-hand="minute"]')!;
+    const pointer = plate.querySelector<SVGGElement>('[data-pointer]')!;
+    const utcOut = plate.querySelector<HTMLElement>('[data-utc]')!;
+    const marks = Array.from(plate.querySelectorAll<HTMLAnchorElement>('[data-mark]'));
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+
+    /** Degrees a second. Every swing runs at this speed, so a short move is
+     *  quick and a long one is stately. A fixed duration makes both wrong. */
+    const SPEED = 300;
+    const MIN_MS = 240;
+    const MAX_MS = 1400;
+    /** Brushing the cursor past a mark should not fling the hand. */
+    const INTENT_MS = 130;
+
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const wrap = (deg: number) => ((deg % 360) + 360) % 360;
+
+    // Unwrapped, so the hand only ever advances. Setting a raw 0-360 bearing
+    // rewinds it the long way round every time the minute rolls.
+    let swept = 0;
+    let liveDeg = 0;
+    /** How far the hand runs ahead of the true second. A mark sets this on the
+     *  way out, which is what lets the hand resume from there instead of
+     *  travelling back to the second it abandoned. */
+    let offset = 0;
+    let held: number | null = null;
+    let swingEnds = 0;
+    let shown = -1;
+    let intent = 0;
+    let handoff = 0;
+
+    /** Forward distance from where the hand is to a 0-360 bearing. */
+    const ahead = (angle: number) => wrap(angle - swept);
+
+    pointer.setAttribute('data-live', '');
+
+    const tick = () => {
+      if (!plate.isConnected) return;
+      const d = new Date();
+      const ms = reduced.matches ? 0 : d.getUTCMilliseconds();
+      const s = d.getUTCSeconds() + ms / 1000;
+      const m = d.getUTCMinutes() + s / 60;
+      const h = (d.getUTCHours() % 12) + m / 60;
+
+      hourHand.style.transform = `rotate(${h * 30}deg)`;
+      minuteHand.style.transform = `rotate(${m * 6}deg)`;
+      liveDeg = s * 6;
+
+      // Untransitioned while free, so this is exact rather than a chase.
+      if (held === null) {
+        swept += ahead(liveDeg + offset);
+        pointer.style.transform = `rotate(${swept}deg)`;
+      }
+
+      if (d.getUTCSeconds() !== shown) {
+        shown = d.getUTCSeconds();
+        utcOut.textContent = `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(shown)}`;
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+
+    for (const mark of marks) {
+      const angle = Number(mark.dataset.angle ?? 0);
+
+      const take = () => {
+        window.clearTimeout(handoff);
+        pointer.removeAttribute('data-live');
+        const degrees = ahead(angle);
+        const ms = Math.min(MAX_MS, Math.max(MIN_MS, (degrees / SPEED) * 1000));
+        held = angle;
+        swingEnds = performance.now() + ms;
+        pointer.style.transitionDuration = `${ms}ms`;
+        swept += degrees;
+        pointer.style.transform = `rotate(${swept}deg)`;
+      };
+
+      const claim = (delay: number) => {
+        window.clearTimeout(intent);
+        if (delay === 0) {
+          take();
+          return;
+        }
+        intent = window.setTimeout(take, delay);
+      };
+
+      const release = () => {
+        window.clearTimeout(intent);
+        if (held === null) return;
+        const mark = held;
+        window.clearTimeout(handoff);
+        // If the swing is still in the air, let it land first; cutting the
+        // transition mid-flight would snap the hand to the mark.
+        const remaining = Math.max(0, swingEnds - performance.now());
+        handoff = window.setTimeout(() => {
+          // Resume ticking from the mark, not from the second it left.
+          offset = wrap(mark - liveDeg);
+          held = null;
+          pointer.setAttribute('data-live', '');
+        }, remaining);
+      };
+
+      mark.addEventListener('pointerenter', () => claim(INTENT_MS));
+      mark.addEventListener('focus', () => claim(0));
+      mark.addEventListener('pointerleave', release);
+      mark.addEventListener('blur', release);
+    }
+  });
+</script>
