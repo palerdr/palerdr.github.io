@@ -77,7 +77,7 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
     <div class="core">
       <p class="who mono">{profile.name}</p>
       <dl class="readout mono">
-        <div><dt>UTC</dt><dd data-utc>--:--:--</dd></div>
+        <div><dt data-zone>ET</dt><dd data-eastern>--:--:--</dd></div>
         <div><dt>TAI − UTC</dt><dd>{TAI_MINUS_UTC} s</dd></div>
       </dl>
     </div>
@@ -331,9 +331,18 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
     const hourHand = plate.querySelector<SVGGElement>('[data-hand="hour"]')!;
     const minuteHand = plate.querySelector<SVGGElement>('[data-hand="minute"]')!;
     const pointer = plate.querySelector<SVGGElement>('[data-pointer]')!;
-    const utcOut = plate.querySelector<HTMLElement>('[data-utc]')!;
+    const easternOut = plate.querySelector<HTMLElement>('[data-eastern]')!;
+    const zoneOut = plate.querySelector<HTMLElement>('[data-zone]')!;
     const marks = Array.from(plate.querySelectorAll<HTMLAnchorElement>('[data-mark]'));
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    const easternFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
+      hourCycle: 'h23',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZoneName: 'short',
+    });
 
     /** Degrees a second. Every swing runs at this speed, so a short move is
      *  quick and a long one is stately. A fixed duration makes both wrong. */
@@ -359,6 +368,23 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
     let shown = -1;
     let intent = 0;
     let handoff = 0;
+    let easternHour = 0;
+    let easternMinute = 0;
+    let easternSecond = 0;
+
+    const readEasternTime = (date: Date) => {
+      const parts = Object.fromEntries(
+        easternFormatter
+          .formatToParts(date)
+          .filter((part) => part.type !== 'literal')
+          .map((part) => [part.type, part.value]),
+      );
+      easternHour = Number(parts.hour);
+      easternMinute = Number(parts.minute);
+      easternSecond = Number(parts.second);
+      easternOut.textContent = `${pad(easternHour)}:${pad(easternMinute)}:${pad(easternSecond)}`;
+      zoneOut.textContent = parts.timeZoneName ?? 'ET';
+    };
 
     /** Forward distance from where the hand is to a 0-360 bearing. */
     const ahead = (angle: number) => wrap(angle - swept);
@@ -368,10 +394,16 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
     const tick = () => {
       if (!plate.isConnected) return;
       const d = new Date();
+      const timestampSecond = Math.floor(d.getTime() / 1000);
+      if (timestampSecond !== shown) {
+        shown = timestampSecond;
+        readEasternTime(d);
+      }
+
       const ms = reduced.matches ? 0 : d.getUTCMilliseconds();
-      const s = d.getUTCSeconds() + ms / 1000;
-      const m = d.getUTCMinutes() + s / 60;
-      const h = (d.getUTCHours() % 12) + m / 60;
+      const s = easternSecond + ms / 1000;
+      const m = easternMinute + s / 60;
+      const h = (easternHour % 12) + m / 60;
 
       hourHand.style.transform = `rotate(${h * 30}deg)`;
       minuteHand.style.transform = `rotate(${m * 6}deg)`;
@@ -383,10 +415,6 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
         pointer.style.transform = `rotate(${swept}deg)`;
       }
 
-      if (d.getUTCSeconds() !== shown) {
-        shown = d.getUTCSeconds();
-        utcOut.textContent = `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(shown)}`;
-      }
       requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);

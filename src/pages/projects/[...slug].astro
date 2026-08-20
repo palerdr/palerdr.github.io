@@ -210,10 +210,16 @@ const showCollapse = entry.id === 'surpassing-the-leader';
   }
 
   .label {
-    margin: 0.4rem 0 0;
+    display: inline-block;
+    max-width: 100%;
+    margin: 0.45rem 0 0;
+    padding: 0.35rem 0.65rem 0.3rem;
+    border-left: 3px solid var(--leap);
+    background: var(--paper-deep);
     font-size: var(--step--1);
+    font-weight: 600;
     line-height: 1.45;
-    color: var(--ink-dim);
+    color: var(--ink);
   }
 
   .dial-mount {

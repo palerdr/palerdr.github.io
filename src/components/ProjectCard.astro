@@ -209,8 +209,15 @@ const panel = `panel-${entry.id}`;
   }
 
   .label {
-    margin: 0.35rem 0 0;
+    display: inline-block;
+    max-width: 100%;
+    margin: 0.45rem 0 0;
+    padding: 0.35rem 0.65rem 0.3rem;
+    border-left: 3px solid var(--leap);
+    background: var(--paper-deep);
+    color: var(--ink);
     font-size: var(--step--1);
+    font-weight: 600;
     line-height: 1.45;
   }
 
