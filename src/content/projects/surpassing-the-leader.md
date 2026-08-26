@@ -14,6 +14,8 @@ stats:
     label: the first Dropper's win probability under optimal play
   - value: 18.2× smaller
     label: the state-space collapse that made an exact solution possible
+  - value: 49 seconds
+    label: to build all 289,374,121 certified values from one Python file on a laptop
 links:
   - href: 'https://github.com/palerdr/SURPASSING-THE-LEADER'
     label: Repository
@@ -85,13 +87,19 @@ Each one is accepted only with a certificate showing it sits within one part in 
 equilibrium against the full 60 by 60 round. If the certificate does not verify, the value is
 not stored, and a more general method is tried until one does.
 
-Each round is a linear program, so the LP solve is the inner loop of the entire sweep. There is
-a C++ implementation of it that sits directly on the HiGHS backend rather than reaching it through
-a wrapper.
+The round matrix has only 61 distinct entries: the successful-check cells depend on the actions
+only through their difference, so the matrix is Toeplitz above the diagonal and constant below
+it. That structure gives a 59-step recurrence that produces both players' equilibrium strategies
+at once, and the certificate for a class costs a few thousand multiply-adds instead of a linear
+program. The LP fallback is still in the ladder; on this table it is never reached.
 
-I also wrote the sweep twice, once as a parallel Rust kernel and once as a straightforward
-Python reference, and checked that the two agree byte for byte everywhere both were run. Two
-independent implementations matching exactly is the main reason I trust the result.
+The first version of the sweep was written twice, as a parallel Rust kernel and a Python
+reference solving two 61 by 61 linear systems per class, and the two agreed byte for byte
+everywhere both were run. The current solver is one Python file with a different algorithm, and
+it reproduces that table's reference values to within 2×10⁻¹¹ at five states and 1.2×10⁻⁹ at the
+sixth. After the sweep, an independent scalar re-solve of 1,200 evenly spaced classes from their
+stored children differed from the stored values by at most 9×10⁻¹⁶. Two different algorithms
+landing on the same numbers is the main reason I trust the result.
 
 ## Result
 
@@ -99,10 +107,10 @@ Under optimal play the first Dropper wins with probability 0.5449. Going first i
 four and a half points, which is less than most estimates I had seen and, unlike those
 estimates, checkable.
 
-Every one of the 289,374,121 classes is solved and certified, with the worst gap anywhere in the
-table coming in under half the tolerance. The sweep runs in 5,432 seconds on one twelve-core
-desktop. The recorded single-core projection for the unquotiented, search-based design was 3.7 to
-5.1 years.
+Every one of the 289,374,121 classes is solved and certified. The whole table builds in 49
+seconds on a fifteen-core laptop, from a single Python file of 480 lines. The first
+implementation took 5,432 seconds on a twelve-core desktop, and the recorded single-core
+projection for the unquotiented, search-based design was 3.7 to 5.1 years.
 
 The full argument is written up as a paper in the repository. Alongside it are the game engine, a
 separate OCaml solver that re-derives the rules independently as a cross-check, and an arena
