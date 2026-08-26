@@ -14,7 +14,7 @@ stats:
     label: the first Dropper's win probability under optimal play
   - value: 18.2× smaller
     label: the state-space collapse that made an exact solution possible
-  - value: 49 seconds
+  - value: 50 seconds
     label: to build all 289,374,121 certified values from one Python file on a laptop
 links:
   - href: 'https://github.com/palerdr/SURPASSING-THE-LEADER'
@@ -107,10 +107,9 @@ Under optimal play the first Dropper wins with probability 0.5449. Going first i
 four and a half points, which is less than most estimates I had seen and, unlike those
 estimates, checkable.
 
-Every one of the 289,374,121 classes is solved and certified. The whole table builds in 49
-seconds on a fifteen-core laptop, from a single Python file of 480 lines. The first
-implementation took 5,432 seconds on a twelve-core desktop, and the recorded single-core
-projection for the unquotiented, search-based design was 3.7 to 5.1 years.
+Every one of the 289,374,121 classes is solved and certified. The unquotiented, search-based
+design was projected at 5 years on one core. The whole table now builds in 50 seconds on a
+laptop, from a single Python file of 481 lines.
 
 The full argument is written up as a paper in the repository. Alongside it are the game engine, a
 separate OCaml solver that re-derives the rules independently as a cross-check, and an arena
