@@ -272,8 +272,10 @@ const panel = `panel-${entry.id}`;
 </style>
 
 <script>
+  import { allLive } from '../scripts/live';
+
   document.addEventListener('astro:page-load', () => {
-    for (const card of document.querySelectorAll<HTMLElement>('[data-card]')) {
+    for (const card of allLive<HTMLElement>('[data-card]')) {
       const toggle = card.querySelector<HTMLButtonElement>('[data-toggle]');
       if (!toggle) continue;
 

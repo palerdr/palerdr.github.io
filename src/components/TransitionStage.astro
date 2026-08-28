@@ -1,19 +1,23 @@
 ---
 /**
- * The transition is a clock hand sweeping the screen. A conic mask follows the
- * blade, so a solid pane is dragged across the viewport behind it, the page
- * swaps under full cover, and a second sweep in the same direction uncovers it.
+ * The transition is the clock's own hand. It reaches out of the dial, sweeps
+ * one full turn, and draws back in — one motion, one curve, no stops in it.
  *
- * Variants: sweep (default) and leap, which stalls at 59 seconds to strike
- * 8:59:60 before completing.
+ * Nothing is hidden behind a cover. The destination page is swapped in first
+ * and left live underneath; what the hand sweeps away is a copy of the page
+ * you are leaving, so the new page is painted on directly behind the blade.
+ * Returning to the clock is the same sweep round the same circle.
+ *
+ * Variants: sweep (default) and leap, which takes the turn more slowly. The
+ * leap second is the reason that link is on the dial at all, but the page is
+ * where it gets told; nothing is written across the screen on the way there.
  */
 ---
 
 <div class="stage" data-stage aria-hidden="true" transition:persist="stage">
-  <div class="pane" data-pane></div>
-  <div class="blade" data-blade></div>
+  <div class="shot" data-shot inert></div>
+  <div class="hand" data-blade></div>
   <div class="hub" data-hub></div>
-  <p class="stamp" data-stamp><span data-stamp-text>8:59:57</span></p>
 </div>
 
 <style>
@@ -23,6 +27,11 @@
     z-index: 9000;
     pointer-events: none;
     display: none;
+    /* Set per transition: where the hand is hinged and how far it has to reach. */
+    --cx: 50vw;
+    --cy: 50vh;
+    --reach: 150vmax;
+    --hub: 18px;
   }
 
   .stage[data-active] {
@@ -31,88 +40,91 @@
 
   /* Only while it is running: a full-viewport animated mask is expensive to
      repaint, and the hint is not worth the memory the rest of the time. */
-  .stage[data-active] .pane {
+  .stage[data-active] .shot {
     will-change: mask-image, -webkit-mask-image;
   }
 
-  .stage[data-active] .blade {
-    will-change: transform;
+  .stage[data-active] .hand {
+    will-change: rotate, scale, opacity;
   }
 
-  /* Solid pane, revealed by the conic mask that trails the blade. */
-  .pane {
+  /* Until the copy is mounted there is nothing to erase, and an empty one
+     would paint its own ground over the page underneath it. */
+  .shot:empty {
+    display: none;
+  }
+
+  /*
+   * The page being left, held still and erased behind the blade. Two masks,
+   * unioned: the wedge the hand has swept, and a disc the size of the hand.
+   * The disc is what lets the reach and the turn run at the same time — while
+   * the hand is still growing, the paint cannot get out past its tip, so there
+   * is no sliver of the new page running ahead of the blade near the corners.
+   * Once the hand is at full length the disc covers the viewport and the wedge
+   * is the whole story.
+   */
+  .shot {
     position: absolute;
     inset: 0;
+    overflow: hidden;
+    contain: paint;
+    background: var(--paper);
     --from: 0deg;
     --sweep: 0deg;
-    background: var(--paper-lift);
-    -webkit-mask-image: conic-gradient(
-      from var(--from),
-      #000 0deg,
-      #000 var(--sweep),
-      transparent var(--sweep)
-    );
-    mask-image: conic-gradient(
-      from var(--from),
-      #000 0deg,
-      #000 var(--sweep),
-      transparent var(--sweep)
-    );
+    --rad: 0px;
+    -webkit-mask-image:
+      conic-gradient(
+        from var(--from) at var(--cx) var(--cy),
+        transparent var(--sweep),
+        #000 calc(var(--sweep) + 0.5deg)
+      ),
+      radial-gradient(
+        circle var(--rad) at var(--cx) var(--cy),
+        transparent calc(100% - 1px),
+        #000 100%
+      );
+    mask-image:
+      conic-gradient(
+        from var(--from) at var(--cx) var(--cy),
+        transparent var(--sweep),
+        #000 calc(var(--sweep) + 0.5deg)
+      ),
+      radial-gradient(
+        circle var(--rad) at var(--cx) var(--cy),
+        transparent calc(100% - 1px),
+        #000 100%
+      );
   }
 
-  .stage[data-variant='leap'] .pane {
-    background: #fbf0ef;
-  }
-
-  /* No translate here: the minifier folds translate into transform, and
-     transform is reserved for the sweep rotation. */
-  .blade {
+  /* Hinged at the hub and tapered to a point, like the hand on the dial it
+     grows out of. Rotation and length are separate CSS properties rather than
+     one transform, so the turn can carry a single easing end to end while the
+     reach and the withdrawal ride on top of it. */
+  .hand {
     position: absolute;
-    left: 50%;
-    bottom: 50%;
-    margin-left: -1.5px;
-    width: 3px;
-    height: 150vmax;
-    border-radius: 3px;
-    transform-origin: 50% 100%;
-    transform: rotate(0deg);
-    background: var(--ink);
-  }
-
-  .stage[data-variant='leap'] .blade {
+    left: var(--cx);
+    bottom: calc(100% - var(--cy));
+    margin-left: -3px;
+    width: 6px;
+    height: var(--reach);
     background: var(--leap);
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    transform-origin: 50% 100%;
+    rotate: 0deg;
+    scale: 1 0;
   }
 
   .hub {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    margin: -9px 0 0 -9px;
-    width: 18px;
-    height: 18px;
+    left: var(--cx);
+    top: var(--cy);
+    width: var(--hub);
+    height: var(--hub);
+    translate: -50% -50%;
     border-radius: 50%;
     background: var(--paper-lift);
-    border: 2px solid var(--ink-faint);
+    border: 2px solid var(--line-strong);
     opacity: 0;
-  }
-
-  .stamp {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin: 0;
-    translate: -50% 3.5rem;
-    font-family: var(--font-mono), monospace;
-    font-size: clamp(2rem, 7.5vw, 4rem);
-    letter-spacing: 0.2em;
-    color: var(--ink);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-    opacity: 0;
-  }
-
-  .stamp[data-struck] {
-    color: var(--leap);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -126,12 +138,25 @@
   type Variant = 'sweep' | 'leap';
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  /** Animating a conic-gradient angle needs @property registration. */
+  /** Animating gradient angles and radii needs @property registration. */
   const canSweep = typeof CSS !== 'undefined' && 'registerProperty' in CSS;
 
+  /** Fraction of the turn spent reaching out, and where the hand starts to go. */
+  const OUT = 0.2;
+  const IN = 0.87;
+  /** The pointer polygon reaches 404 of the dial's 500 unit radius. */
+  const POINTER = 0.404;
+
   let running: Animation[] = [];
+  /** What the click asked for, read where the source element is still known. */
+  let asked: { variant: Variant; from: number } | null = null;
+  /** The copy of the outgoing page, built while it is still standing. */
+  let held: HTMLElement | null = null;
 
   const q = <T extends Element>(sel: string) => document.querySelector<T>(sel);
+  /** Scoped to the stage: the copy mounted inside it carries the page's own
+   *  markup, and the clock face has [data-hand] elements of its own. */
+  const inStage = <T extends Element>(stage: Element, sel: string) => stage.querySelector<T>(sel);
 
   const clear = () => {
     for (const a of running) a.cancel();
@@ -148,141 +173,224 @@
   const settle = (anims: (Animation | null)[]) =>
     Promise.allSettled(anims.filter(Boolean).map((a) => a!.finished));
 
-  async function playIn(variant: Variant, from: number) {
-    const stage = q<HTMLElement>('[data-stage]');
-    if (!stage) return;
-    clear();
-
-    stage.dataset.variant = variant;
-    stage.dataset.from = String(from);
-    stage.setAttribute('data-active', '');
-
-    const pane = q<HTMLElement>('[data-pane]');
-    const blade = q<HTMLElement>('[data-blade]');
-    const stamp = q<HTMLElement>('[data-stamp]');
-    const text = q<HTMLElement>('[data-stamp-text]');
-    stamp?.removeAttribute('data-struck');
-    pane?.style.setProperty('--from', `${from}deg`);
-
-    if (!canSweep) {
-      // No registered-property support: fall back to a plain fade.
-      pane?.style.setProperty('--sweep', '360deg');
-      await settle([play(pane, [{ opacity: 0 }, { opacity: 1 }], { duration: 320 })]);
-      return;
+  /**
+   * Where a rotated element is actually pointing, rather than where it has been
+   * told to end up. The pointer swings to a mark under a CSS transition, so its
+   * inline transform is the destination from the moment the swing begins — read
+   * that and the blade starts wherever the swing happens to have got to.
+   */
+  function bearing(el: Element | null) {
+    if (!el) return null;
+    const t = getComputedStyle(el).transform;
+    if (!t || t === 'none') return null;
+    try {
+      const m = new DOMMatrixReadOnly(t);
+      return (((Math.atan2(m.b, m.a) * 180) / Math.PI) % 360 + 360) % 360;
+    } catch {
+      return null;
     }
-
-    play(q('[data-hub]'), [{ opacity: 0 }, { opacity: 1 }], { duration: 160 });
-
-    if (variant === 'leap') {
-      // One animation, one curve, start to finish. Intermediate keyframes were
-      // the last hitch: each boundary stepped the angular velocity down
-      // discontinuously (about 20x at the sharpest), which the eye reads as a
-      // stutter even though the sweep never actually stopped. A single easing
-      // has no boundaries, so acceleration stays continuous the whole way.
-      const DUR = 2000;
-      const glide = 'cubic-bezier(.16,.8,.24,1)';
-      /** Decelerates hard but never dies: still moving at roughly 4 deg a
-       *  second as it closes, against a real second hand's 6. */
-      const arc = 'cubic-bezier(.1,.8,.2,1)';
-      /** Where that curve passes 354 degrees, i.e. 59 seconds. Solved once
-       *  rather than watched for, so nothing reads style during the sweep. */
-      const STRIKE = DUR * 0.67;
-
-      if (text) text.textContent = '8:59:59';
-
-      const arcing = [
-        play(pane, [{ '--sweep': '0deg' } as Keyframe, { '--sweep': '360deg' }], {
-          duration: DUR,
-          easing: arc,
-        }),
-        play(blade, [{ transform: `rotate(${from}deg)` }, { transform: `rotate(${from + 360}deg)` }], {
-          duration: DUR,
-          easing: arc,
-        }),
-        play(
-          stamp,
-          [
-            { opacity: 0, transform: 'scale(0.94)' },
-            { opacity: 1, transform: 'scale(1)' },
-          ],
-          { duration: 420, delay: 700, easing: glide },
-        ),
-      ];
-
-      // Struck as the blade enters the second that should not exist.
-      const strike = window.setTimeout(() => {
-        if (text) text.textContent = '8:59:60';
-        stamp?.setAttribute('data-struck', '');
-        play(
-          stamp,
-          [
-            { transform: 'scale(1)' },
-            { transform: 'scale(1.09)', offset: 0.35 },
-            { transform: 'scale(1)' },
-          ],
-          { duration: 560, easing: glide },
-        );
-      }, STRIKE);
-
-      await settle(arcing);
-      window.clearTimeout(strike);
-      return;
-    }
-
-    await settle([
-      play(pane, [{ '--sweep': '0deg' } as Keyframe, { '--sweep': '360deg' }], {
-        duration: 620,
-        easing: 'cubic-bezier(.45,0,.25,1)',
-      }),
-      play(blade, [{ transform: `rotate(${from}deg)` }, { transform: `rotate(${from + 360}deg)` }], {
-        duration: 620,
-        easing: 'cubic-bezier(.45,0,.25,1)',
-      }),
-    ]);
   }
 
-  async function playOut() {
+  /**
+   * Hinge the sweep on the dial when the dial is the thing on screen, so the
+   * blade is the clock's own hand carrying on outward: same hub, same bearing,
+   * same length, so there is nothing to jump over at the handoff. Anywhere else
+   * there is no hand to take over from, and the blade comes out of the middle
+   * of the screen at the angle the link asked for.
+   */
+  function hinge() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const plate = q<HTMLElement>('[data-dialplate]');
+    let cx = w / 2;
+    let cy = h / 2;
+    let hub = 18;
+    let seeded = 0;
+    let from: number | null = null;
+
+    if (plate) {
+      const r = plate.getBoundingClientRect();
+      const px = r.left + r.width / 2;
+      const py = r.top + r.height / 2;
+      if (py > -r.height && py < h + r.height) {
+        cx = px;
+        cy = py;
+        hub = Math.max(14, r.width * 0.052);
+        seeded = (r.width / 2) * POINTER;
+        from = bearing(plate.querySelector('[data-pointer]'));
+      }
+    }
+
+    const reach = Math.hypot(Math.max(cx, w - cx), Math.max(cy, h - cy)) + 8;
+    return { cx, cy, hub, reach, from, seed: seeded / reach };
+  }
+
+  /** Inherited from body, which the copy is not, so it has to be carried over. */
+  const CARRIED = [
+    'font-family',
+    'font-size',
+    'font-weight',
+    'font-style',
+    'line-height',
+    'letter-spacing',
+    'color',
+  ];
+
+  function copyPage() {
+    const body = document.body;
+    const shell = document.createElement('div');
+    const cs = getComputedStyle(body);
+    for (const prop of CARRIED) shell.style.setProperty(prop, cs.getPropertyValue(prop));
+    shell.style.position = 'absolute';
+    shell.style.top = `${-window.scrollY}px`;
+    shell.style.left = `${-window.scrollX}px`;
+    shell.style.width = `${document.documentElement.clientWidth}px`;
+
+    for (const child of Array.from(body.children)) {
+      if (child.hasAttribute('data-stage')) continue;
+      if (child.tagName === 'SCRIPT') continue;
+      shell.appendChild(child.cloneNode(true));
+    }
+
+    // A transition in flight clones as its destination rather than as what is
+    // on screen, so the pointer would jump to its mark the moment it froze.
+    const swinging = body.querySelector('[data-pointer]');
+    const frozen = shell.querySelector<HTMLElement>('[data-pointer]');
+    if (swinging && frozen) frozen.style.transform = getComputedStyle(swinging).transform;
+
+    // A second set of ids would shadow the live page's, for anchors and for the
+    // router's own scroll restoration. Everything else the copy keeps: the
+    // components find their roots through live(), so they pass it over.
+    for (const el of shell.querySelectorAll('[id]')) el.removeAttribute('id');
+    for (const el of shell.querySelectorAll('script')) el.remove();
+
+    return shell;
+  }
+
+  /** What the router matches head elements on when deciding what survives. */
+  const PERSIST = 'data-astro-transition-persist';
+
+  /**
+   * Page CSS is per page, so the copy would go unstyled the moment the head is
+   * swapped — and an unstyled clock is a page of black SVG, since the dial is
+   * drawn by fill and stroke rules. Moving the sheet elsewhere does not save
+   * it: re-inserting a link re-fetches it, and the styles lapse for the frames
+   * that matters most, the first ones.
+   *
+   * So leave it exactly where it is and tell the router to keep it. Marking the
+   * live sheet with a persist id and planting a token carrying the same id in
+   * the incoming head is the router's own mechanism for this: it matches the
+   * two, drops the token, and leaves the sheet untouched. Sheets both heads
+   * share are left alone entirely — the router already keeps those.
+   */
+  function keepSheets(incoming: Document) {
+    const hrefs = new Set<string | null>();
+    for (const n of incoming.head.querySelectorAll('link[rel="stylesheet"]')) {
+      hrefs.add(n.getAttribute('href'));
+    }
+    const texts = new Set<string>();
+    for (const n of incoming.head.querySelectorAll('style')) texts.add(n.textContent ?? '');
+
+    let n = 0;
+    for (const node of Array.from(document.head.querySelectorAll('link[rel="stylesheet"], style'))) {
+      const orphan =
+        node.tagName === 'LINK'
+          ? !hrefs.has(node.getAttribute('href'))
+          : !texts.has(node.textContent ?? '');
+      if (!orphan) continue;
+      const id = `shot-css-${n++}`;
+      node.setAttribute('data-shot-css', '');
+      node.setAttribute(PERSIST, id);
+      const token = incoming.createElement('meta');
+      token.setAttribute(PERSIST, id);
+      incoming.head.append(token);
+    }
+  }
+
+  /**
+   * The whole transition, in one pass. The turn is a single animation under a
+   * single easing, so there is no boundary anywhere in it for the eye to catch:
+   * the old shape stopped dead twice, once waiting for the page and once at the
+   * handoff between covering and uncovering. The reach and the withdrawal are
+   * separate properties layered over that same turn, so the hand is moving from
+   * the first frame to the last and never pauses to change what it is doing.
+   */
+  async function turn() {
     const stage = q<HTMLElement>('[data-stage]');
     if (!stage || !stage.hasAttribute('data-active')) return;
 
-    const pane = q<HTMLElement>('[data-pane]');
-    const blade = q<HTMLElement>('[data-blade]');
+    const shot = inStage<HTMLElement>(stage, '[data-shot]');
+    const hand = inStage<HTMLElement>(stage, '[data-blade]');
+    const hub = inStage<HTMLElement>(stage, '[data-hub]');
     const from = Number(stage.dataset.from ?? 0);
+    const reach = Number(stage.dataset.reach ?? 0);
+    /** The length the hand already has when the blade takes it over. */
+    const seed = Number(stage.dataset.seed ?? 0);
+    const variant = (stage.dataset.variant ?? 'sweep') as Variant;
 
     if (!canSweep) {
-      await settle([play(pane, [{ opacity: 1 }, { opacity: 0 }], { duration: 300 })]);
+      // No registered-property support: fall back to a plain fade.
+      await settle([play(shot, [{ opacity: 1 }, { opacity: 0 }], { duration: 380 })]);
     } else {
-      // Same rotational direction: the trailing edge chases the blade round,
-      // uncovering the new page behind it. This curve starts at speed rather
-      // than easing in: the cover sweep ends at almost zero velocity, so an
-      // ease-in here would put two stationary moments back to back and stall
-      // the blade at the handoff, which is the last place the eye caught it.
-      const leave = 'cubic-bezier(0,.6,.3,1)';
+      const DUR = variant === 'leap' ? 1250 : 850;
+      /**
+       * Near-symmetric, and deliberately so. A harder ease-out spent nearly
+       * half the turn crawling through its last few degrees, which reads as
+       * drag rather than as smoothness — the hand looks like it is labouring
+       * to close. This eases in and out evenly and still arrives at rest.
+       * Leap takes the same shape a little more slowly.
+       */
+      const curve = variant === 'leap' ? 'cubic-bezier(.38,0,.44,1)' : 'cubic-bezier(.42,0,.5,1)';
+      const out = 'cubic-bezier(.2,.8,.3,1)';
+      const back = 'cubic-bezier(.4,0,.7,1)';
+
       await settle([
+        // The turn. One curve, start to finish.
+        play(hand, [{ rotate: `${from}deg` }, { rotate: `${from + 360}deg` }], {
+          duration: DUR,
+          easing: curve,
+        }),
+        play(shot, [{ '--sweep': '0deg' } as Keyframe, { '--sweep': '360deg' }], {
+          duration: DUR,
+          easing: curve,
+        }),
+        // Reaching out, then drawing back in, both while the turn carries on.
         play(
-          pane,
+          hand,
           [
-            { '--from': `${from}deg`, '--sweep': '360deg' } as Keyframe,
-            { '--from': `${from + 360}deg`, '--sweep': '0deg' },
+            { scale: `1 ${seed}`, opacity: 1, offset: 0, easing: out },
+            { scale: '1 1', opacity: 1, offset: OUT, easing: 'linear' },
+            { scale: '1 1', opacity: 1, offset: IN, easing: back },
+            { scale: '1 0', opacity: 0, offset: 1 },
           ],
-          { duration: 560, easing: leave },
+          { duration: DUR },
         ),
+        // The paint keeps pace with the tip until the hand is at full length.
         play(
-          blade,
+          shot,
           [
-            { transform: `rotate(${from + 360}deg)`, opacity: 1 },
-            { transform: `rotate(${from + 720}deg)`, opacity: 0 },
+            { '--rad': `${reach * seed}px`, offset: 0, easing: out } as Keyframe,
+            { '--rad': `${reach}px`, offset: OUT },
+            { '--rad': `${reach}px`, offset: 1 },
           ],
-          { duration: 560, easing: leave },
+          { duration: DUR },
         ),
-        play(q('[data-hub]'), [{ opacity: 1 }, { opacity: 0 }], { duration: 200, delay: 300 }),
-        play(q('[data-stamp]'), [{ opacity: 1 }, { opacity: 0 }], { duration: 200 }),
+        play(hub, [{ opacity: 0 }, { opacity: 1 }], { duration: DUR * OUT, easing: out }),
+        play(hub, [{ opacity: 1 }, { opacity: 0 }], {
+          duration: DUR * (1 - IN),
+          delay: DUR * IN,
+          easing: back,
+          fill: 'forwards',
+        }),
       ]);
     }
 
     stage.removeAttribute('data-active');
     clear();
-    pane?.style.removeProperty('--sweep');
+    shot?.replaceChildren();
+    shot?.style.removeProperty('--sweep');
+    shot?.style.removeProperty('--rad');
+    for (const node of document.querySelectorAll('[data-shot-css]')) node.remove();
   }
 
   declare global {
@@ -294,36 +402,68 @@
   if (!window.__stageWired) {
     window.__stageWired = true;
 
+    // Only place the clicked element is known. Nothing is drawn yet: the page
+    // is fetched first so the turn runs start to finish without waiting on it.
     document.addEventListener('astro:before-preparation', (event) => {
-      const e = event as Event & {
-        to: URL;
-        loader: () => Promise<void>;
-        sourceElement?: Element;
-      };
+      const e = event as Event & { to: URL; sourceElement?: Element };
       if (reduced.matches) return;
 
       const source = e.sourceElement?.closest<HTMLElement>('[data-angle], [data-transition]');
       const declared = source?.dataset.transition;
-      const variant: Variant =
-        declared === 'leap' || e.to.pathname.includes('/projects/surpassing-the-leader')
-          ? 'leap'
-          : 'sweep';
-      const from = Number(source?.dataset.angle ?? 0);
-
-      const original = e.loader;
-      e.loader = async () => {
-        // Start fetching immediately and let the cover draw over it. Awaiting
-        // the sweep first meant the screen finished covering and then sat
-        // frozen until the page arrived, which is the pause that reads as a
-        // hitch partway through. Astro still swaps only once both resolve.
-        const loading = original();
-        await playIn(variant, from);
-        await loading;
+      asked = {
+        variant:
+          declared === 'leap' || e.to.pathname.includes('/projects/surpassing-the-leader')
+            ? 'leap'
+            : 'sweep',
+        from: Number(source?.dataset.angle ?? 0),
       };
     });
 
+    // Last moment the outgoing page is still standing, so it is the only place
+    // it can be measured and copied, and the only place the incoming head can
+    // be compared against the one about to be replaced.
+    document.addEventListener('astro:before-swap', (event) => {
+      const e = event as Event & { newDocument: Document };
+      const stage = q<HTMLElement>('[data-stage]');
+      if (reduced.matches || !stage || !asked) return;
+
+      clear();
+      const geo = hinge();
+      // Where the hand is, not where the mark is: the swing to a mark takes up
+      // to 1.4s and a click lands in the middle of it as often as not, and off
+      // the dial entirely on a tap or a keyboard follow. Starting anywhere but
+      // under the hand puts a jump in before the turn has begun.
+      const from = geo.from ?? asked.from;
+      stage.dataset.variant = asked.variant;
+      stage.dataset.from = String(from);
+      stage.dataset.reach = String(geo.reach);
+      stage.dataset.seed = String(geo.seed);
+      stage.style.setProperty('--cx', `${geo.cx}px`);
+      stage.style.setProperty('--cy', `${geo.cy}px`);
+      stage.style.setProperty('--hub', `${geo.hub}px`);
+      stage.style.setProperty('--reach', `${geo.reach}px`);
+      stage.setAttribute('data-active', '');
+
+      const shot = inStage<HTMLElement>(stage, '[data-shot]');
+      shot?.style.setProperty('--from', `${from}deg`);
+      shot?.style.setProperty('--sweep', '0deg');
+      shot?.style.setProperty('--rad', `${geo.reach * geo.seed}px`);
+
+      held = copyPage();
+      keepSheets(e.newDocument);
+      asked = null;
+    });
+
+    // Same task as the swap, so the copy goes up before anything is painted
+    // and the page underneath changes without a frame of it showing.
     document.addEventListener('astro:after-swap', () => {
-      if (!reduced.matches) void playOut();
+      if (reduced.matches) return;
+      const stage = q<HTMLElement>('[data-stage]');
+      if (held && stage) {
+        inStage<HTMLElement>(stage, '[data-shot]')?.replaceChildren(held);
+        held = null;
+      }
+      void turn();
     });
   }
 </script>

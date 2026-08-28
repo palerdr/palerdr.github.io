@@ -237,8 +237,10 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
 </style>
 
 <script>
+  import { live } from '../scripts/live';
+
   document.addEventListener('astro:page-load', () => {
-    const root = document.querySelector<HTMLElement>('[data-dial]');
+    const root = live<HTMLElement>('[data-dial]');
     if (!root) return;
 
     const hit = root.querySelector<HTMLButtonElement>('[data-hit]')!;

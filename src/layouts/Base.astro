@@ -144,8 +144,10 @@ const structuredData = isHome
 
     <script>
       // Runs on first load and again after every client-side navigation.
+      import { allLive } from '../scripts/live';
+
       document.addEventListener('astro:page-load', () => {
-        const revealables = document.querySelectorAll<HTMLElement>('[data-reveal]');
+        const revealables = allLive<HTMLElement>('[data-reveal]');
         if (revealables.length === 0) return;
 
         if (!('IntersectionObserver' in window)) {

@@ -11,6 +11,13 @@
   initial-value: 0deg;
 }
 
+/* How far out the hand has reached, so the wipe cannot outrun its tip. */
+@property --rad {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 :root {
   /* Ground. White, and nothing sits on a different white. */
   --paper: #ffffff;

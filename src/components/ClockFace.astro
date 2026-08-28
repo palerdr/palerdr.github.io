@@ -324,8 +324,10 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
 </style>
 
 <script>
+  import { live } from '../scripts/live';
+
   document.addEventListener('astro:page-load', () => {
-    const plate = document.querySelector<HTMLElement>('[data-dialplate]');
+    const plate = live<HTMLElement>('[data-dialplate]');
     if (!plate) return;
 
     const hourHand = plate.querySelector<SVGGElement>('[data-hand="hour"]')!;

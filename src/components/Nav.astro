@@ -170,8 +170,10 @@ const sectionBase = home ? '' : homePath;
 </style>
 
 <script>
+  import { live } from '../scripts/live';
+
   document.addEventListener('astro:page-load', () => {
-    const header = document.querySelector<HTMLElement>('[data-nav]');
+    const header = live<HTMLElement>('[data-nav]');
     if (!header) return;
 
     const spies = Array.from(header.querySelectorAll<HTMLAnchorElement>('[data-spy]'));
