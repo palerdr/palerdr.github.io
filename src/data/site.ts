@@ -4,15 +4,14 @@ export const profile = {
   name: 'James Cenawood',
   tagline: 'I obsess over problems.',
   description:
-    'James Cenawood is a Cornell computer science student building rigorous systems in data '
-    + 'science, AI, optimization, and mathematical modeling.',
+    'James Cenawood studies computer science at Cornell and builds systems he can prove correct, '
+    + 'from an exact game solver to a retrieval benchmark.',
   blurb: [
-    'CS at Cornell, currently a data science intern at Northwell Health.',
-    'My work has one shape. Take something people reason about informally (a gambling game from ' +
-      'a manga, a training program, whether a search system is returning the right documents), ' +
-      'make it precise enough to compute with, then check the answer.',
-    'The checking is not the last step but the whole problem. Producing an answer is rarely the ' +
-      'hard part; knowing whether to believe it is where the time goes.',
+    'I study computer science at Cornell. This summer I was a data science intern at Northwell Health.',
+    'Since high school I have been obsessed with a gambling game from a manga. I spent months on it ' +
+      'and proved a simplification that cut the solve from a projected five years to 50 seconds. ' +
+      'Most of my work has that shape: I take a problem people argue about by feel and make it ' +
+      'precise enough to compute.',
   ],
   location: 'Ithaca, NY',
 };
@@ -20,7 +19,7 @@ export const profile = {
 export const links = {
   github: 'https://github.com/palerdr',
   email: 'jcc463@cornell.edu',
-  linkedin: 'https://www.linkedin.com/in/james-cenawood-8882b6300',
+  linkedin: 'https://www.linkedin.com/in/james-cenawood',
   resume: `${base}/resume.pdf`,
 };
 
@@ -97,10 +96,9 @@ export const experience: Role[] = [
     dates: 'June 2026 – August 2026',
     location: 'New York, NY',
     bullets: [
-      'A hospital data warehouse is too large for any one person to hold, and most of the people who need answers from it do not write SQL. The agent takes the question in English, finds the schema documentation that covers it, and drafts SQL against the real schema. It touches no patient data, executes nothing, and validates every query before returning it.',
-      'I own the evaluation. Everything rests on retrieval: an agent working from the wrong table still writes SQL that reads well and runs, so the most consequential failure in the system is also the least visible one.',
-      'The benchmark groups questions by kind rather than averaging them into a single score, and the grouping is what found the problem. The system does well on questions that name a table or a column and poorly on questions phrased in business terms, which is nearly everything the people who cannot write SQL will ask. That gap does not close by searching harder.',
-      'I also tied for first in the intern Kaggle competition, on a CatBoost and TabNet blend validated by group rather than at random.',
+      'The warehouse holds more tables than one analyst can keep in their head, and most of the people who need answers from it do not write SQL. I worked on an agent that takes a question in English and drafts SQL against the real schema from the documentation it retrieves. It has no access to patient data and executes nothing.',
+      'I built the retrieval benchmark. It grouped questions by kind, and the groups showed the system did well on questions that named a table and failed on questions phrased in business terms, which are the questions the staff without SQL ask. Fusing BM25 full-text search with dense-vector retrieval raised hit@5 from 53.8% to 75%.',
+      'I also tied for first in the intern Kaggle competition with a CatBoost and TabNet blend, validated by group so that passengers travelling together stayed in one fold.',
     ],
     readMore: { href: `${base}/projects/northwell`, label: 'Read the write-up' },
   },
@@ -111,10 +109,10 @@ export const experience: Role[] = [
     dates: 'December 2025 – Present',
     location: 'Ithaca, NY',
     bullets: [
-      'I lead the eight-person software subteam building a drone that flies a race course with no pilot and no external positioning, navigating from camera input and its own motion estimate. Our entry qualified for Virtual Qualifier 1 of Anduril’s AI Grand Prix.',
-      'Most of my own time went somewhere less visible: making the project something AI agents could work inside. The simulator is a closed-source Windows app and the only source of an official score, so I wrote the PowerShell layer that drives it: launch, menus, window focus, scoring, summarising a run. An agent can now fly a candidate policy and get a scored result back with nobody at the machine.',
-      'The other half is rules. Cascading context with an enforced read order, and an iteration prompt that fixes the procedure: name the failure, one hypothesis, the smallest change, three live attempts, promote or revert. Qualification blocks certain telemetry, so the rules make consuming it illegal rather than merely unwise, and no agent can wander into a disqualifying change.',
-      'I also run the subteam’s technical interviews, twenty-odd so far, on a problem set I wrote: LeetCode in shape, drone in substance, so candidates reason about gates and trajectories instead of generic arrays.',
+      'I lead the eight-person software subteam building a drone that flies a race course with no pilot and no external positioning. Our entry passed Virtual Qualifier 1 of Anduril’s AI Grand Prix at 17.2 seconds.',
+      'Most of my own time went into making the project workable for coding agents. The simulator is a closed-source Windows app and the only source of an official score, so I wrote the PowerShell layer that launches it and scores a run. An agent can now fly a candidate policy and read back a scored result with nobody at the machine.',
+      'Qualification blocks certain telemetry, so I wrote agent rules that treat reading it as an error, plus an iteration prompt that fixes the procedure: one hypothesis and the smallest change per attempt, then promote or revert.',
+      'I also run the subteam’s technical interviews, more than twenty so far, on a problem set I wrote around gates and trajectories.',
     ],
   },
   {
@@ -124,8 +122,8 @@ export const experience: Role[] = [
     dates: 'August 2025 – Present',
     location: 'Ithaca, NY',
     bullets: [
-      'I designed the memory backend for a smart-glasses assistant that keeps track of the people the wearer has met: what was discussed, what is known about them and when it was learned, and how they connect to everyone else already stored. That is the context handed to the dialog model.',
-      'I also built the resolver that maps “the guy from the climbing gym” onto a specific person. When a description fits more than one, it hands the model the details that separate them, so the assistant asks rather than guessing and being confidently wrong. More recently I added speech recognition, so conversations store themselves.',
+      'I designed the memory backend for a smart-glasses assistant that keeps track of the people the wearer has met: what they talked about, and how each person connects to the people already stored.',
+      'I also built the resolver that maps “the guy from the climbing gym” onto one stored person. If a description fits more than one, it hands the model the details that separate them so the assistant asks a follow-up question. I added speech recognition after that, so the assistant stores conversations without a manual step.',
     ],
   },
 ];

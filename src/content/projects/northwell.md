@@ -1,13 +1,12 @@
 ---
 # TODO(james): clear this page with your manager before the site goes public.
-# Deliberately kept at method level: no corpus counts beyond the ~40k HTML schema
-# files, no internal table or column names, no index/chunk/edge totals.
+# Kept at method level apart from the figures that already appear on the public resume PDF.
 title: Asking a hospital data warehouse questions in English
-tagline: Northwell Health, and how to tell whether the search underneath is working.
+tagline: Northwell Health, and a benchmark that shows when the search underneath fails.
 summary: >-
-  An agent that takes a question in plain English, finds the schema documentation that covers it,
-  and drafts SQL against the real schema. I work on the evaluation side: whether the search
-  underneath is retrieving the right documentation, and how we would know.
+  An agent that takes a question in plain English and drafts SQL against the real schema from
+  the documentation it retrieves. I owned the evaluation: whether the search underneath finds
+  the right documentation, and how we would know.
 order: 4
 year: 2026
 stack: [Python, LangGraph, 'Full-text search', BigQuery, CatBoost, Optuna, Chainlit]
@@ -18,65 +17,51 @@ listed: false
 writeup: true
 ---
 
-## What it does
+## The agent
 
-Nobody knows the whole warehouse.
+The warehouse holds more tables than one analyst can keep in their head, and most of the people
+who need answers from it do not write SQL. The analysts who do spend much of their week telling
+everyone else which table holds a given fact.
 
-It is large enough that no individual holds it in their head, and most of the people who need
-answers from it do not write SQL. The ones who do spend a lot of their time answering the same
-structural question for everyone else: where does this particular fact live?
+The agent reads a question in plain English and finds the documentation for the relevant part
+of the schema. From there it answers or drafts SQL against the real schema. It asks for
+clarification when a question is ambiguous and says so when it cannot answer.
 
-The agent takes the question in plain English, works out what is being asked, finds the
-documentation covering the relevant part of the schema, and either answers from that
-documentation or drafts SQL against the real schema. If the question is ambiguous it asks for
-clarification. If it cannot answer, it says so.
+It has no connection to patient data, and a deterministic validator checks any SQL before it
+leaves. In a hospital a wrong answer stated with confidence costs more than no answer, and the
+team designed around that.
 
-It is deliberately conservative. It has no connection to patient data, execution is disabled,
-and any SQL it produces goes through a deterministic validator first. In a hospital setting a
-confidently wrong answer is worse than no answer, and most of the design follows from that.
+## My part
 
-## The part I work on
+If retrieval returns the wrong table, the agent writes SQL from the wrong table, and the SQL
+still runs. That is the failure I spent the summer measuring.
 
-All of it depends on retrieving the right documentation.
+"The retrieval seems fine" gives a team nothing to act on, so I built a benchmark that groups
+questions by kind. Averaged together the results looked acceptable. Split apart, the system did
+well on questions that named a table or column and failed on questions in business language
+that named neither, which are the questions the people without SQL ask. The benchmark attributed
+82.4% of top-5 retrieval misses to vocabulary mismatch.
 
-An agent working from the wrong table still produces SQL that reads well and runs. Nothing in
-the output indicates it was built on the wrong basis. That makes retrieval both the most
-consequential failure in the system and the hardest one to see.
-
-"The retrieval seems fine" is not something a team can act on, so I built the benchmark that
-makes it checkable, with questions grouped by the kind of question being asked rather than
-averaged into a single score.
-
-The grouping is what mattered. Averaged together the results looked acceptable. Split apart,
-the system did well on questions naming a specific table or column and poorly on questions
-phrased in business language that named neither, which are most of what the people who cannot
-write SQL will ask.
-
-That failure does not improve by searching harder. If the question and the document share no
-vocabulary, returning more results just returns more things that do not match. Identifying the
-cause correctly ruled out the obvious fix and pointed at a different one.
+Searching harder does not fix a vocabulary mismatch; more results means more documents that
+share no words with the question. With that diagnosis I ruled out the obvious fix and fused
+BM25 full-text search with dense-vector retrieval, which raised hit@5 from 53.8% to 75% across
+about 250 analyst queries.
 
 ## Comparing the options
 
-There were three views on the team about which retrieval approach to use and no measurements to
-settle it. I put all three behind one runner producing directly comparable reports on the same
-questions.
-
-The approach I had expected to win made no difference to the results. The useful part was
-working out why, and finding that the cause was in how it had been configured rather than in the
-approach itself. Writing it up as "this does not work" would have been accurate and would have
-closed off something still worth trying, so the report says specifically what was measured and
-what it does and does not rule out.
+The team held three views on which retrieval approach to use and had no measurements to settle
+it, so I put all three behind one runner that produces comparable reports on the same
+questions. The approach I expected to win made no difference in the measured runs. The cause was
+its configuration, so the report says what I measured and what it leaves open.
 
 ## Intern Kaggle competition
 
-I also won the intern Kaggle competition (tied for first). The final submission blended two
-models weighted toward the stronger one, with the second contributing because it made different
-mistakes rather than fewer.
+I tied for first in the intern Kaggle competition. The final submission blended CatBoost and
+TabNet, weighted toward the stronger model, and the second earned its weight by making
+different mistakes.
 
-Validation was grouped rather than random, since passengers travelling together share
-information and splitting a group across folds inflates the local score. I tuned with Optuna but
-treated the results as candidates rather than answers, because several configurations that
-scored highest locally did worse on the leaderboard, and testing around the best blend showed it
-was sensitive to small changes in weighting. That is the same problem the retrieval work kept
-running into: one validation number is easy to over-trust.
+I grouped validation folds so that passengers travelling together stayed in one fold, since
+splitting a group inflates the local score. I tuned with Optuna and treated the results as
+candidates, because several configurations that scored highest locally did worse on the
+leaderboard. I ran into the same problem in the retrieval work, where a single validation number
+hid the failure that the grouping exposed.

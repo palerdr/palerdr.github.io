@@ -2,9 +2,9 @@
 title: AlgoSplit
 tagline: Predicts what a training program is worth before you run it.
 summary: >-
-  Most training apps record what you already did. AlgoSplit models the growth signal a week of
-  training actually produces across 29 muscle regions, so you can compare two programs, find the
-  muscles a program is underworking, and fix it before spending two months on it.
+  Most training apps record what you did. AlgoSplit models the growth signal a week of training
+  produces across 29 muscle regions, so you can compare two programs and find the muscles a
+  program underworks before you spend two months on it.
 order: 2
 year: 2026
 stack:
@@ -13,7 +13,7 @@ stats:
   - value: '+35%'
     label: average net weekly stimulus across 100+ user-submitted splits
   - value: '29'
-    label: muscle regions a program is scored across before it is run
+    label: muscle regions AlgoSplit scores before you run a program
 links:
   - href: 'https://algo-split.vercel.app'
     label: Live app
@@ -24,41 +24,35 @@ writeup: true
 
 ## The gap
 
-Training apps are logbooks.
+Training apps record what you lifted and total it up. That tells you whether you trained, and
+you find out whether the program was any good two months later, with no way to trace the outcome
+back to one decision.
 
-You record what you lifted and they total it up. That tells you whether you trained. It does not
-tell you whether the program was any good, and you generally find that out two months later,
-with no way to trace the outcome back to a specific decision.
+The research is specific about what drives hypertrophy: how much stimulus a set produces as it
+approaches failure, and how fatigue accumulates against it across a week. That research sits in
+papers, in no form you can apply to your own program.
 
-The research is reasonably specific about what drives hypertrophy: how much stimulus a set
-produces as it approaches failure, how that decays across a week, how fatigue accumulates
-against it and affects the following sessions. It just is not in a form you can apply to your
-own program.
+AlgoSplit does that. Each program gets a predicted weekly outcome across 29 muscle regions before
+you run any of it.
 
-AlgoSplit puts it in that form. Each program gets a predicted weekly outcome across 29 muscle
-regions before you run any of it.
+## In use
 
-## What that lets you do
+You can compare two programs and see that one trains rear delts once a week. You can find the
+muscles receiving more volume than they can convert into growth, or move a session to another
+day and see the effect on the rest of the week.
 
-You can compare two programs directly and see that one of them trains rear delts once a week.
-You can find the muscles receiving more volume than they can convert into growth. You can move
-a session to a different day and see the effect on the rest of the week.
+For the model to score a program it has not seen, the parser resolves each lift into the muscles
+it works and the fatigue it adds, along with its movement pattern and resistance profile.
 
-For that to work on a program the model has not seen, exercises cannot just be names. The parser
-resolves a lift into its movement pattern, the muscles it works, its resistance profile, whether
-it loads one side or both, and how much systemic fatigue it contributes. That is what lets the
-model score an arbitrary program someone types in.
+Across the first hundred user programs, average net weekly stimulus rose 35 percent, most of it
+from undertrained muscles people had not noticed.
 
-Across the first hundred or so user programs, average net weekly stimulus increased 35 percent,
-mostly from identifying undertrained muscles that people had not noticed.
+## Shipped
 
-## What shipped
+Google and Apple sign-in, workout logging with previous entries as placeholders so logging stays
+quick between sets, history and trend charts, a 3D stimulus body, custom exercises, saved
+program comparisons, and microcycle scheduling. Web and iOS ship from one codebase.
 
-Google and Apple sign-in, workout logging with sets, reps, load, RIR and notes, previous entries
-shown as placeholder values so logging is quick between sets, history and trend charts, a 3D
-stimulus body, bodyweight tracking, custom exercises, saved program comparisons, and microcycle
-scheduling. Web and iOS from one codebase.
-
-The analysis kernel recomputes all 29 regions whenever a program changes, which was noticeably
-slow in Python. It runs in Rust now, with uncached p95 down from 31.9 ms to 3.8 ms, and the
-Python version kept behind a parity check so the two can be tested against each other.
+The analysis kernel recomputes all 29 regions on each program change, which was slow in Python.
+I ported it to Rust, with uncached p95 down from 31.9 ms to 3.8 ms, and kept the Python version
+behind a parity check within 1×10⁻⁸.
