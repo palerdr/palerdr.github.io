@@ -54,5 +54,5 @@ quick between sets, history and trend charts, a 3D stimulus body, custom exercis
 program comparisons, and microcycle scheduling. Web and iOS ship from one codebase.
 
 The analysis kernel recomputes all 29 regions on each program change, which was slow in Python.
-I ported it to Rust, with uncached p95 down from 31.9 ms to 3.8 ms, and kept the Python version
+I ported it to Rust, with uncached p95 down from 31.9 ms to 3.85 ms, and kept the Python version
 behind a parity check within 1×10⁻⁸.

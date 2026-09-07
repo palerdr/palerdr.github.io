@@ -23,8 +23,9 @@ page at `/projects/<filename>`; set `listed: false` to keep it off the home page
 
 ## Résumé
 
-`resume/qresume0.tex` is the public source. It intentionally omits a postal address. Rebuild and
-publish the downloadable copy with:
+`public/resume.pdf` is the deployed copy. It is currently the exported PDF supplied directly, and
+`resume/qresume0.tex` is a LaTeX version of the same content, kept in sync by hand. It
+intentionally omits a postal address. To rebuild the downloadable copy from the TeX instead:
 
 ```sh
 mkdir -p tmp/pdfs

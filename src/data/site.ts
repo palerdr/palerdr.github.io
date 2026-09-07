@@ -44,12 +44,13 @@ export const education = {
 export const skills = [
   {
     label: 'Languages',
-    items: ['Python', 'C++', 'Rust', 'SQL', 'TypeScript', 'OCaml'],
+    items: ['Python', 'SQL', 'TypeScript', 'Rust', 'C++', 'OCaml'],
   },
   {
     label: 'Libraries & frameworks',
     items: [
       'PyTorch',
+      'TensorFlow',
       'scikit-learn',
       'NumPy',
       'pandas',
@@ -65,6 +66,7 @@ export const skills = [
     label: 'Infrastructure',
     items: [
       'PostgreSQL',
+      'SQLAlchemy',
       'SQLite',
       'BigQuery',
       'Docker',
@@ -94,7 +96,7 @@ export const experience: Role[] = [
     orgUrl: 'https://www.northwell.edu/',
     title: 'Data Science Intern',
     dates: 'June 2026 – August 2026',
-    location: 'New York, NY',
+    location: 'New Hyde Park, NY',
     bullets: [
       'The warehouse holds more tables than one analyst can keep in their head, and most of the people who need answers from it do not write SQL. I worked on an agent that takes a question in English and drafts SQL against the real schema from the documentation it retrieves. It has no access to patient data and executes nothing.',
       'I built the retrieval benchmark. It grouped questions by kind, and the groups showed the system did well on questions that named a table and failed on questions phrased in business terms, which are the questions the staff without SQL ask. Fusing BM25 full-text search with dense-vector retrieval raised hit@5 from 53.8% to 75%.',

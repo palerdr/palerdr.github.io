@@ -13,9 +13,9 @@
 \hypersetup{
 colorlinks=true,
 urlcolor=linkblue,
-pdftitle={James Cenawood - Quantitative Research and Mathematical Modeling Resume},
+pdftitle={James Cenawood Resume 2028 V1},
 pdfauthor={James Cenawood},
-pdfsubject={Resume}
+pdfsubject={Software Engineering and Backend}
 }
 \pagestyle{empty}
 \setlength{\parindent}{0pt}
@@ -59,63 +59,62 @@ itemsep=\bulletgap
 \begin{center}
 {\fontsize{18}{20}\selectfont\bfseries JAMES CENAWOOD}\\[2.5pt]
 {\small
-\resumelink{mailto:jcc463@cornell.edu}{jcc463@cornell.edu}    \ \textcolor{rulegray}{\textbar}\     (516) 423-9561    \ \textcolor{rulegray}{\textbar}\     \resumelink{https://github.com/palerdr}{github.com/palerdr}    \ \textcolor{rulegray}{\textbar}\     \resumelink{https://www.linkedin.com/in/james-cenawood/}{linkedin.com/in/james-cenawood}  }
+\resumelink{mailto:jcc463@cornell.edu}{jcc463@cornell.edu}    \ \textcolor{rulegray}{\textbar}\     (516) 423-9561    \ \textcolor{rulegray}{\textbar}\     \resumelink{https://github.com/palerdr}{github.com/palerdr}    \ \textcolor{rulegray}{\textbar}\     \resumelink{https://www.linkedin.com/in/james-cenawood/}{linkedin.com/in/james-cenawood}    \ \textcolor{rulegray}{\textbar}\     \resumelink{https://palerdr.github.io/}{palerdr.github.io}  }
 \end{center}
 
 \resumesection{Education}
-\textbf{Cornell University, College of Engineering}\hfill August 2024 -- May 2028\par
+\textbf{Cornell University}\ \textcolor{rulegray}{\textbar}\ \textit{College of Engineering, Ithaca, NY}\hfill Aug 2024 -- May 2028 (Expected)\par
 \vspace{1.0pt}
-Bachelor of Science in Computer Science\hfill GPA: 3.9\par
+Bachelor of Science in Computer Science\ \textcolor{rulegray}{\textbar}\ GPA: 3.9\par
 \vspace{2.0pt}
-\detail{Selected Coursework}{Probability \& Statistical Inference (A+), Stochastic Processes (A+), Linear Algebra, Discrete Structures; Machine Learning and Analysis of Algorithms in progress}
+\detail{Coursework}{Object-Oriented Programming \& Data Structures, Functional Programming}
+\detail{In progress}{Analysis of Algorithms, Machine Learning}
 
 \resumesection{Experience}
-\entry{Northwell Health}{Data Science Intern}{June 2026 -- August 2026}
+\entry{Northwell Health}{Data Science Intern -- New Hyde Park, NY}{Jun 2026 -- Aug 2026}
 \begin{itemize}
-\item Built a LangGraph NL-to-SQL agent with deterministic schema/SQL validation and no patient-data access
-\item Raised schema recall@20 from 53.8\% to 74.9\% across \textasciitilde{}250 analyst queries by fusing BM25-ranked SQLite FTS and dense-vector retrieval over 40{,}551 Epic schema files and 482{,}130 indexed chunks
-\item Built the stratified evaluation benchmark that attributed 82.4\% of top-5 retrieval misses to vocabulary mismatch rather than ranking depth across 74 answerable questions
-\item Tied for first in Northwell's intern Kaggle competition with a 0.81014 public-leaderboard accuracy score using an Optuna-tuned CatBoost and TabNet ensemble
+\item Built a natural-language-to-SQL agent in Python and LangGraph that validates structured query plans against Epic EHR schema metadata before compiling SQL; enforced deterministic safety checks without patient-data access
+\item Raised top-5 retrieval hit rate from 53.8\% to 75\% across \textasciitilde{}250 analyst queries by combining BM25/SQLite full-text search with dense-vector retrieval over 40{,}551 Epic schema files and 482{,}130 chunks
+\item Tied for first in the intern Kaggle competition using an Optuna-tuned CatBoost and TabNet ensemble
 \end{itemize}
 
-\entry{Cornell Physical Intelligence}{Software Subteam Lead}{December 2025 -- Present}
+\entry{Cornell Physical Intelligence}{Software Subteam Lead -- Ithaca, NY}{Dec 2025 -- Present}
 \begin{itemize}
-\item Owned the research agenda and core implementation for an eight-engineer software subteam developing mapless visual navigation and collective-thrust/body-rate control for Anduril's AI Grand Prix; passed Virtual Qualifier 1 with a time of 17.2s
-\item Prevented invalid policies from reading unavailable race-time state and automated simulator launch, scoring, telemetry and visual capture, and summaries with a Python/PowerShell experimentation harness for coding agents
+\item Lead an eight-engineer subteam, owning the research agenda and implementation for mapless visual navigation and collective-thrust/body-rate control in Anduril's AI Grand Prix; passed Virtual Qualifier 1 at 17.2s
+\item Enforced race-time telemetry limits to block policies from reading unavailable state; built a Python/PowerShell harness for simulator launch, scoring, telemetry capture, and experiment summaries
+\item Designed and administered 20+ technical interviews using an original drone-themed algorithms problem set
 \end{itemize}
 
-\entry{Cornell Extended Reality}{Software Team Member}{August 2025 -- Present}
+\entry{Cornell Extended Reality}{Software Team Member -- Ithaca, NY}{Aug 2025 -- Present}
 \begin{itemize}
-\item Designed a persistent, person-specific memory for an AI smart-glasses assistant through a typed, multi-tenant FastAPI/PostgreSQL backend and natural-language identity resolver over episodes, time-scoped facts, summaries, and relationship graphs
+\item Designed a typed, multi-tenant memory backend for an AI smart-glasses assistant (FastAPI, PostgreSQL, SQLAlchemy), storing conversation episodes, time-scoped facts, summaries, and relationship graphs
+\item Built a natural-language person resolver with multi-pass name matching and disambiguation hints for descriptions that matched multiple stored identities
 \end{itemize}
 
-\resumesection{Selected Research \& Projects}
-\vspace{\entrygap}\textbf{Surpassing the Leader: Exact Stochastic-Game Solver}\hfill \resumelink{https://github.com/palerdr/SURPASSING-THE-LEADER}{github.com/palerdr/SURPASSING-THE-LEADER}\par\vspace{1.0pt}
+\resumesection{Projects}
+\entry{AlgoSplit}{Full-Stack Algorithmic Training Planner}{2025 -- 2026}
 \begin{itemize}
-\item Formalized Usogui's final two-person gamble as a finite simultaneous-move zero-sum stochastic game; authored the accompanying paper and implemented the game and verification pipeline across C++, Rust, Python, and OCaml
-\item Proved a value-preserving quotient reducing 5{,}267{,}489{,}760 reachable states to 289{,}374{,}121 equivalence classes (18.203$\times$) and a strictly increasing potential ordering them into 1{,}201 layers, eliminating graph search and reachability analysis
-\item Completed the full backward-induction tablebase in 50 seconds on a laptop from a single 481-line Python file, versus a projected 5-year single-core search; bounded maximum unilateral policy improvement below $6.005\times10^{-4}$ and derived a 54.493\% first-Dropper win probability
+\item Shipped authenticated web and iOS clients for an algorithmic training planner (FastAPI, Supabase, React, Expo), with workout logging, history, split comparison, and 3D stimulus visualization
+\item Cut p95 analysis latency from 31.9 ms to 3.85 ms (8.3$\times$) in a local benchmark by porting the analysis kernel to Rust; checked numeric parity with Python within 1e-8
+\item Modeled training stimulus and fatigue across 29 muscle regions from hypertrophy research; increased model-scored net weekly stimulus by 35\% on average across 100+ user-submitted splits
 \end{itemize}
 
-\vspace{\entrygap}\textbf{AlgoSplit: Quantitative Hypertrophy Modeling}\hfill \resumelink{https://algo-split.vercel.app/}{algo-split.vercel.app}\par\vspace{1.0pt}
+\entry{Surpassing the Leader}{Exact Stochastic-Game Solver}{2026}
 \begin{itemize}
-\item Formalized a weekly hypertrophy stimulus-fatigue model from hypertrophy research for low-level insights into training
-\item Designed an auditable 29-region stimulus research engine for comparing and analyzing training splits before they are run, defining assumptions for movement-pattern-to-muscle attribution, resistance profiles, volume, and scheduling
-\item Increased model-scored net weekly stimulus by 35\% on average across 100+ user-submitted training splits through generated exercise, volume, and scheduling optimizations
-\item Operationalized free-text lift names as a 34-class feature representation mapping exercises to movement patterns, target muscles, resistance profiles, and fatigue features; achieved 100\% exact-match accuracy and 1.00 macro-F1 across 196 curated strings, then shipped the model through authenticated web and iOS clients
+\item Built a stochastic-game solver and verification pipeline in Python, OCaml, C++, and Rust; proved a state-space reduction from 5.27 billion states to 289.4 million equivalence classes
+\item Replaced a linear-programming inner loop with a closed-form recurrence; solved the 289-million-class game in 49 seconds on a laptop, down from 1.5 hours on a 12-core desktop, with independent scalar verification
 \end{itemize}
 
-\vspace{\entrygap}\textbf{Sentinel: Intelligent Waiting-Room Triage}\ \textcolor{rulegray}{\textbar}\ \textbf{1st Place, URMC x WICC x Gemini Hackathon}\hfill \resumelink{https://sentinel.thekoppe.com/}{sentinel.thekoppe.com}\par\vspace{1.0pt}
+\entry{Sentinel}{1st Place, URMC x WICC x Gemini Hackathon}{2026}
 \begin{itemize}
-\item Won first place by building a QR-based waiting-room triage platform whose deterministic engine converts conversational intake, symptoms, vitals, and wait time into ESI estimates, risk scores, follow-up actions, and a live queue
-\item Designed emergency overrides, confidence/noise penalties, promotion hysteresis, and delayed demotion; constrained the LLM reviewer to within-band reordering, escalation suggestions, and targeted follow-up questions
+\item Built a QR-based waiting-room triage prototype (TypeScript, LangChain, Gemini API) with conversational intake and a deterministic Emergency Severity Index (ESI) rules engine for a live patient queue
+\item Designed queue controls with emergency overrides and promotion hysteresis; constrained Gemini to advisory reordering within severity bands and escalation requests
 \end{itemize}
 
-\resumesection{Technical Skills}
+\resumesection{Skills \& Interests}
 {\small
-\detail{Languages}{Python, C++, Rust, SQL, TypeScript, OCaml}
-\detail{Libraries/Frameworks}{PyTorch, scikit-learn, NumPy, pandas, Polars, FastAPI, LangGraph, OpenCV, React, Expo}
-\detail{Infrastructure/Tools}{PostgreSQL, SQLite, BigQuery, Docker, Supabase, Vercel, Optuna, Weights \& Biases, Git, LaTeX}
-\detail{Interests}{Poker (Cornell Poker Club: 3rd, Citadel \$2K Guaranteed; 3rd, Jane Street Freeroll), Game Design, 3D Animation, VR}
+\detail{Languages}{Python, SQL, TypeScript, Rust, C++, OCaml}
+\detail{Tools \& Frameworks}{FastAPI, PostgreSQL, SQLAlchemy, React, Supabase, Docker, Git, LangGraph, PyTorch, TensorFlow}
+\detail{Interests}{Tournament Poker, Game Design, 3D Animation, Rock Climbing}
 }
 \end{document}
