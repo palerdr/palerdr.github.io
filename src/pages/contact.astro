@@ -1,0 +1,71 @@
+---
+import Base from '../layouts/Base.astro';
+import { profile, links } from '../data/site';
+---
+
+<Base title={`Contact — ${profile.name}`} tab="contact" home={{ angle: 180 }}>
+  <div class="page">
+    <h1>Contact</h1>
+
+    <p class="lead">
+      Outside of work I play tournament poker, lift, and climb. I took third in the Citadel $2K Guaranteed
+      and third in the Jane Street Freeroll with the Cornell Poker Club. I also do game design and 3D
+      animation. Email is the fastest way to reach me.
+    </p>
+
+    <dl class="channels">
+      <div>
+        <dt>Email</dt>
+        <dd><a href={`mailto:${links.email}`}>{links.email}</a></dd>
+      </div>
+      <div>
+        <dt>GitHub</dt>
+        <dd><a href={links.github}>@palerdr</a></dd>
+      </div>
+      <div>
+        <dt>LinkedIn</dt>
+        <dd><a href={links.linkedin}>James Cenawood</a></dd>
+      </div>
+      <div>
+        <dt>Résumé</dt>
+        <dd><a href={links.resume} data-astro-reload>PDF</a></dd>
+      </div>
+    </dl>
+  </div>
+</Base>
+
+<style>
+  .lead {
+    max-width: var(--measure);
+    font-size: var(--step-1);
+    color: var(--ink-dim);
+    margin-bottom: 2rem;
+  }
+
+  .channels {
+    margin: 0;
+  }
+
+  .channels div {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 1rem;
+    align-items: baseline;
+    padding-block: 0.6rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .channels div:last-child {
+    border-bottom: 0;
+  }
+
+  dt {
+    font-weight: 700;
+  }
+
+  dd {
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+</style>

@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { profile } from '../data/site';
+
+const projects = (await getCollection('projects', ({ data }) => data.listed)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<Base title={`Projects — ${profile.name}`} tab="projects" home={{ angle: 120 }}>
+  <div class="page">
+    <h1>Projects</h1>
+    {projects.map((entry, i) => <ProjectCard entry={entry} index={i} />)}
+  </div>
+</Base>

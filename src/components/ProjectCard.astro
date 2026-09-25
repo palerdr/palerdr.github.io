@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { entry, index } = Astro.props;
-const { title, tagline, summary, award, stack, stats, links, writeup } = entry.data;
+const { title, tagline, summary, award, stats, links, writeup } = entry.data;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const suits = ['♠', '♥', '♦', '♣'];
@@ -23,7 +23,7 @@ const panel = `panel-${entry.id}`;
     <span class="headings">
       <span class="title">{title}</span>
       <span class="tagline">{tagline}</span>
-      {award && <span class="award mono">{award}</span>}
+      {award && <span class="award">{award}</span>}
     </span>
     <span class="chevron" aria-hidden="true"></span>
   </button>
@@ -38,16 +38,14 @@ const panel = `panel-${entry.id}`;
             {stats.map((s) => (
               <div class="plate">
                 <dt class="value">{s.value}</dt>
-                <dd class="label muted">{s.label}</dd>
+                <dd class="label">{s.label}</dd>
               </div>
             ))}
           </dl>
         )
       }
 
-      <p class="stack mono">{stack.join(' · ')}</p>
-
-      <p class="links mono">
+      <p class="links">
         {writeup && <a class="primary" href={`${base}/projects/${entry.id}`}>Read the write-up →</a>}
         {links.map((l) => <a href={l.href}>{l.label} ↗</a>)}
       </p>
@@ -136,20 +134,8 @@ const panel = `panel-${entry.id}`;
   }
 
   .award {
-    display: inline-flex;
-    align-items: center;
-    justify-self: start;
-    margin-top: 0.35rem;
-    max-width: 100%;
-    padding: 0.35rem 0.65rem 0.3rem;
-    border-left: 3px solid var(--leap);
-    background: var(--paper-deep);
     color: var(--ink);
-    font-size: 0.9375rem;
     font-weight: 700;
-    line-height: 1.4;
-    text-transform: none;
-    letter-spacing: 0.025em;
   }
 
   .chevron {
@@ -189,46 +175,35 @@ const panel = `panel-${entry.id}`;
     color: var(--ink-dim);
   }
 
+  /* The metrics, written out in one plain box: the figure in bold, then what it
+     measures. */
   .stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem 3.5rem;
-    margin: 0 0 1.75rem;
+    display: grid;
+    gap: 0.35rem;
+    margin: 0 0 1.5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 4px;
   }
 
   .plate {
     min-width: 0;
-    max-width: 20rem;
+  }
+
+  .value,
+  .label {
+    display: inline;
+    margin: 0;
   }
 
   .value {
-    font-size: var(--step-2);
+    margin-right: 0.35em;
     font-weight: 700;
-    line-height: 1.1;
     color: var(--ink);
   }
 
   .label {
-    display: inline-block;
-    max-width: 100%;
-    margin: 0.45rem 0 0;
-    padding: 0.35rem 0.65rem 0.3rem;
-    border-left: 3px solid var(--leap);
-    background: var(--paper-deep);
-    color: var(--ink);
-    font-size: var(--step--1);
-    font-weight: 600;
-    line-height: 1.45;
-  }
-
-  .stack {
-    margin: 0 0 1.5rem;
-    max-width: var(--measure);
-    text-transform: none;
-    letter-spacing: 0.03em;
-    color: var(--ink-faint);
-    font-size: 0.75rem;
-    line-height: 1.7;
+    color: var(--ink-dim);
   }
 
   .links {

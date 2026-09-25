@@ -1,0 +1,150 @@
+{
+ "source": {
+  "repo": "https://github.com/palerdr/spaceship-titanic",
+  "commit": "b07fdff",
+  "train_csv_sha256": "17336d553f49ebdf6ecb266d2b5d3746e5dd308445f7c7864141c4f28d2a88d0",
+  "scikit_learn": "1.9.1",
+  "n_splits": 5,
+  "seed": 42
+ },
+ "passengers": [
+  {
+   "passenger_id": "0003_01",
+   "group": "0003",
+   "fold_plain": 3,
+   "fold_grouped": 4
+  },
+  {
+   "passenger_id": "0003_02",
+   "group": "0003",
+   "fold_plain": 3,
+   "fold_grouped": 4
+  },
+  {
+   "passenger_id": "0006_01",
+   "group": "0006",
+   "fold_plain": 4,
+   "fold_grouped": 5
+  },
+  {
+   "passenger_id": "0006_02",
+   "group": "0006",
+   "fold_plain": 2,
+   "fold_grouped": 5
+  },
+  {
+   "passenger_id": "0008_01",
+   "group": "0008",
+   "fold_plain": 1,
+   "fold_grouped": 5
+  },
+  {
+   "passenger_id": "0008_02",
+   "group": "0008",
+   "fold_plain": 2,
+   "fold_grouped": 5
+  },
+  {
+   "passenger_id": "0008_03",
+   "group": "0008",
+   "fold_plain": 4,
+   "fold_grouped": 5
+  },
+  {
+   "passenger_id": "0017_01",
+   "group": "0017",
+   "fold_plain": 3,
+   "fold_grouped": 5
+  },
+  {
+   "passenger_id": "0017_02",
+   "group": "0017",
+   "fold_plain": 3,
+   "fold_grouped": 5
+  },
+  {
+   "passenger_id": "0020_01",
+   "group": "0020",
+   "fold_plain": 3,
+   "fold_grouped": 5
+  },
+  {
+   "passenger_id": "0020_02",
+   "group": "0020",
+   "fold_plain": 2,
+   "fold_grouped": 5
+  },
+  {
+   "passenger_id": "0020_03",
+   "group": "0020",
+   "fold_plain": 4,
+   "fold_grouped": 5
+  },
+  {
+   "passenger_id": "0020_04",
+   "group": "0020",
+   "fold_plain": 5,
+   "fold_grouped": 5
+  },
+  {
+   "passenger_id": "0020_05",
+   "group": "0020",
+   "fold_plain": 2,
+   "fold_grouped": 5
+  },
+  {
+   "passenger_id": "0020_06",
+   "group": "0020",
+   "fold_plain": 3,
+   "fold_grouped": 5
+  },
+  {
+   "passenger_id": "0031_01",
+   "group": "0031",
+   "fold_plain": 2,
+   "fold_grouped": 4
+  },
+  {
+   "passenger_id": "0031_02",
+   "group": "0031",
+   "fold_plain": 3,
+   "fold_grouped": 4
+  },
+  {
+   "passenger_id": "0031_03",
+   "group": "0031",
+   "fold_plain": 3,
+   "fold_grouped": 4
+  },
+  {
+   "passenger_id": "0044_01",
+   "group": "0044",
+   "fold_plain": 3,
+   "fold_grouped": 2
+  },
+  {
+   "passenger_id": "0044_02",
+   "group": "0044",
+   "fold_plain": 5,
+   "fold_grouped": 2
+  },
+  {
+   "passenger_id": "0044_03",
+   "group": "0044",
+   "fold_plain": 3,
+   "fold_grouped": 2
+  },
+  {
+   "passenger_id": "0045_01",
+   "group": "0045",
+   "fold_plain": 3,
+   "fold_grouped": 5
+  },
+  {
+   "passenger_id": "0045_02",
+   "group": "0045",
+   "fold_plain": 5,
+   "fold_grouped": 5
+  }
+ ]
+}

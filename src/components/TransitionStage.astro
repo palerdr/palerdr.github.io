@@ -11,6 +11,9 @@
  * Variants: sweep (default) and leap, which takes the turn more slowly. The
  * leap second is the reason that link is on the dial at all, but the page is
  * where it gets told; nothing is written across the screen on the way there.
+ *
+ * The hand only runs to and from the clock. Every other link swaps the page
+ * with no motion, the way a plain site loads its next page.
  */
 ---
 
@@ -241,6 +244,12 @@
     const shell = document.createElement('div');
     const cs = getComputedStyle(body);
     for (const prop of CARRIED) shell.style.setProperty(prop, cs.getPropertyValue(prop));
+    // Computed line-height comes back in px, and a px value inherits unchanged
+    // into larger text. Carry it as a ratio, or every heading and lead in the
+    // copy sets tighter than the live page and jumps as the hand sweeps.
+    const lh = parseFloat(cs.lineHeight);
+    const fs = parseFloat(cs.fontSize);
+    if (lh > 0 && fs > 0) shell.style.lineHeight = String(lh / fs);
     shell.style.position = 'absolute';
     shell.style.top = `${-window.scrollY}px`;
     shell.style.left = `${-window.scrollX}px`;
@@ -249,6 +258,8 @@
     for (const child of Array.from(body.children)) {
       if (child.hasAttribute('data-stage')) continue;
       if (child.tagName === 'SCRIPT') continue;
+      // Dev only: a clone of Astro's toolbar tries to boot a second toolbar and throws.
+      if (child.tagName === 'ASTRO-DEV-TOOLBAR') continue;
       shell.appendChild(child.cloneNode(true));
     }
 
@@ -261,7 +272,8 @@
     // A second set of ids would shadow the live page's, for anchors and for the
     // router's own scroll restoration. Everything else the copy keeps: the
     // components find their roots through live(), so they pass it over.
-    for (const el of shell.querySelectorAll('[id]')) el.removeAttribute('id');
+    // SVG markers keep theirs: a figure's arrowheads resolve through url(#id).
+    for (const el of shell.querySelectorAll('[id]:not(marker)')) el.removeAttribute('id');
     for (const el of shell.querySelectorAll('script')) el.remove();
 
     return shell;
@@ -404,9 +416,13 @@
 
     // Only place the clicked element is known. Nothing is drawn yet: the page
     // is fetched first so the turn runs start to finish without waiting on it.
+    const clockPath = new URL(import.meta.env.BASE_URL, location.origin).pathname;
+
     document.addEventListener('astro:before-preparation', (event) => {
-      const e = event as Event & { to: URL; sourceElement?: Element };
+      const e = event as Event & { from: URL; to: URL; sourceElement?: Element };
+      asked = null;
       if (reduced.matches) return;
+      if (e.from.pathname !== clockPath && e.to.pathname !== clockPath) return;
 
       const source = e.sourceElement?.closest<HTMLElement>('[data-angle], [data-transition]');
       const declared = source?.dataset.transition;

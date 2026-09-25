@@ -3,17 +3,23 @@ import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import Nav from '../components/Nav.astro';
 import TransitionStage from '../components/TransitionStage.astro';
-import { links, profile } from '../data/site';
+import { links, profile, type TabId } from '../data/site';
 import '../styles/global.css';
 
 interface Props {
   title?: string;
   description?: string;
+  /** The sidebar tab this page belongs to. */
+  tab?: TabId;
+  /** The clock mark this page hangs off, so the hand sweeps back from there. */
+  home?: { angle: number; transition?: 'sweep' | 'leap' };
 }
 
 const {
   title = profile.name,
   description = profile.description,
+  tab,
+  home,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -78,6 +84,7 @@ const structuredData = isHome
       )
     }
     <Font cssVariable="--font-body" preload />
+    <Font cssVariable="--font-title" preload />
     <ClientRouter />
     <script is:inline>
       document.documentElement.classList.add('js');
@@ -86,61 +93,10 @@ const structuredData = isHome
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <TransitionStage />
-    <Nav />
-    <main id="main">
+    <Nav active={tab} home={home} />
+    <main id="main" class="content">
       <slot />
     </main>
-    <footer>
-      <div class="wrap footer-inner">
-        <p class="mono">© {new Date().getFullYear()} {profile.name}</p>
-        <p class="mono">
-          Built with <a href="https://astro.build">Astro</a>
-          <span class="sep" aria-hidden="true"></span>
-          <a href="#top">Back to top ↑</a>
-        </p>
-      </div>
-    </footer>
-
-    <style>
-      footer {
-        border-top: 1px solid var(--line);
-        margin-top: 6rem;
-        padding-block: 2rem 3rem;
-        background: var(--paper);
-      }
-
-      .footer-inner {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem 2rem;
-        justify-content: space-between;
-        align-items: center;
-        color: var(--ink-faint);
-      }
-
-      .footer-inner p {
-        margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-      }
-
-      .footer-inner a {
-        text-decoration: none;
-        color: var(--ink-dim);
-      }
-
-      .footer-inner a:hover {
-        color: var(--tint);
-      }
-
-      .sep {
-        width: 4px;
-        height: 4px;
-        border-radius: 50%;
-        background: var(--line-strong);
-      }
-    </style>
 
     <script>
       // Runs on first load and again after every client-side navigation.

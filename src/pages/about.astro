@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import { profile, skills } from '../data/site';
+---
+
+<Base title={`About — ${profile.name}`} tab="about" home={{ angle: 0 }}>
+  <div class="page">
+    <h1>About</h1>
+
+    <div class="blurb">
+      {profile.blurb.map((para) => <p>{para}</p>)}
+    </div>
+
+    <h2>Skills</h2>
+    <dl class="skills">
+      {
+        skills.map((group) => (
+          <div>
+            <dt>{group.label}</dt>
+            <dd>{group.items.join(', ')}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</Base>
+
+<style>
+  .blurb {
+    font-size: var(--step-1);
+    max-width: var(--measure);
+  }
+
+  .blurb p {
+    color: var(--ink-dim);
+  }
+
+  .blurb p:first-child {
+    color: var(--ink);
+  }
+
+  h2 {
+    margin: 2.5rem 0 1rem;
+  }
+
+  .skills {
+    margin: 0;
+  }
+
+  .skills dt {
+    font-weight: 700;
+  }
+
+  .skills dd {
+    margin: 0 0 0.75rem;
+    color: var(--ink-dim);
+  }
+</style>

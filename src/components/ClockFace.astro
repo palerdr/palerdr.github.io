@@ -1,5 +1,5 @@
 ---
-import { profile } from '../data/site';
+import { tabs } from '../data/site';
 
 /**
  * The landing page is the clock. Each destination sits at an hour mark; hovering
@@ -7,25 +7,25 @@ import { profile } from '../data/site';
  * the sweep that wipes the screen starts where the hand already is. Let go and
  * the hand carries on ticking from that mark rather than returning to the
  * second it left, so the face keeps time but not the same phase.
- *
- * TODO(james): verify against IERS Bulletin C if a leap second is announced.
  */
-const TAI_MINUS_UTC = 37;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
+/** The four tabs at 12, 2, 4 and 6 o'clock; the two write-ups at 8 and 10. */
 const MARKS = [
-  { hour: 12, label: 'Intro', href: `${base}/#intro` },
-  { hour: 2, label: 'Experience', href: `${base}/#experience` },
-  { hour: 4, label: 'Projects', href: `${base}/#projects` },
-  { hour: 6, label: 'Contact', href: `${base}/#contact` },
+  ...tabs.map((t) => ({ hour: t.angle / 30, label: t.label, href: t.href, leap: false })),
   {
     hour: 8,
     label: 'Surpassing the Leader',
     href: `${base}/projects/surpassing-the-leader`,
     leap: true,
   },
-  { hour: 10, label: 'AlgoSplit', href: `${base}/projects/algosplit` },
+  { hour: 10, label: 'AlgoSplit', href: `${base}/projects/algosplit`, leap: false },
 ];
+
+/** Each label sits on the side of its pip that faces the centre, so no text
+ *  reaches the rim or the ticks. */
+const inward = (hour: number) =>
+  hour % 12 === 0 ? 'below' : hour === 6 ? 'above' : hour < 6 ? 'left' : 'right';
 
 const marks = MARKS.map((m) => {
   const rad = ((m.hour * 30 - 90) * Math.PI) / 180;
@@ -34,6 +34,7 @@ const marks = MARKS.map((m) => {
     left: 50 + 38 * Math.cos(rad),
     top: 50 + 38 * Math.sin(rad),
     angle: m.hour * 30,
+    side: inward(m.hour),
   };
 });
 
@@ -74,18 +75,10 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
       <circle class="hub" cx="500" cy="500" r="13" />
     </svg>
 
-    <div class="core">
-      <p class="who mono">{profile.name}</p>
-      <dl class="readout mono">
-        <div><dt data-zone>ET</dt><dd data-eastern>--:--:--</dd></div>
-        <div><dt>TAI − UTC</dt><dd>{TAI_MINUS_UTC} s</dd></div>
-      </dl>
-    </div>
-
     {
       marks.map((m) => (
         <a
-          class:list={['mark', { leap: m.leap }]}
+          class:list={['mark', m.side, { leap: m.leap }]}
           href={m.href}
           style={`left:${m.left}%; top:${m.top}%`}
           data-mark
@@ -98,23 +91,27 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
       ))
     }
   </div>
-
-  <p class="hint mono">Scroll, or pick an hour</p>
 </section>
 
 <style>
+  /* The clock sits in the middle of the column beside the sidebar. */
   .clock-page {
     position: relative;
-    min-height: 100svh;
     display: grid;
     place-items: center;
-    padding-block: 5rem 3rem;
+  }
+
+  @media (min-width: 48em) {
+    .clock-page {
+      min-height: calc(100svh - 8rem);
+    }
   }
 
   /* The plate: white on white. The rim and the engraving are the whole drawing. */
   .dialplate {
     position: relative;
-    width: min(86vmin, 46rem);
+    /* A short window gets at least 22rem of clock, and the page scrolls. */
+    width: min(100%, max(calc(100svh - 10rem), 22rem), 40rem);
     aspect-ratio: 1;
     border-radius: 50%;
     background: var(--paper);
@@ -197,87 +194,71 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
     stroke-width: 3;
   }
 
-  .core {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    translate: -50% -50%;
-    width: 62%;
-    text-align: center;
-    display: grid;
-    justify-items: center;
-    gap: 0.9rem;
-  }
-
-  /* The only words on the dial, set like a name engraved on one. */
-  .who {
-    margin: 0;
-    color: var(--ink);
-    font-size: clamp(0.8125rem, 1.8vw, 1.0625rem);
-    letter-spacing: 0.22em;
-  }
-
-  .readout {
-    display: flex;
-    gap: 1.25rem;
-    margin: 0.3rem 0 0;
-    font-size: 0.625rem;
-  }
-
-  .readout div {
-    display: grid;
-    gap: 0.2rem;
-  }
-
-  .readout dt {
-    color: var(--ink-faint);
-  }
-
-  .readout dd {
-    margin: 0;
-    color: var(--ink-dim);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.08em;
-  }
-
   /* ---- Hour marks ---- */
 
+  /* The mark is the pip, centred on its hour. The label hangs off it. */
   .mark {
     position: absolute;
     translate: -50% -50%;
-    display: grid;
-    justify-items: center;
-    gap: 0.45rem;
-    text-decoration: none;
-    color: var(--ink-dim);
-    width: max-content;
-    max-width: 9rem;
-    text-align: center;
-  }
-
-  .pip {
     width: 0.7rem;
     height: 0.7rem;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  /* A ring and bare text, so the hand shows through both as it passes. */
+  .pip {
+    display: block;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    background: var(--surface-strong);
+    background: transparent;
     border: 1px solid var(--line-strong);
     transition: background 0.25s var(--ease), border-color 0.25s var(--ease), scale 0.25s var(--ease);
   }
 
   .label {
-    font-family: var(--font-mono), monospace;
-    font-size: 0.625rem;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    line-height: 1.35;
-    padding: 0.35rem 0.5rem;
-    background: var(--paper);
-    transition: color 0.25s var(--ease);
+    position: absolute;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    width: max-content;
+    max-width: 7rem;
   }
 
-  .mark:hover,
-  .mark:focus-visible {
-    color: var(--ink);
+  .below .label,
+  .above .label {
+    left: 50%;
+    translate: -50% 0;
+    text-align: center;
+  }
+
+  .below .label {
+    top: calc(100% + 0.4rem);
+  }
+
+  .above .label {
+    bottom: calc(100% + 0.4rem);
+  }
+
+  .left .label,
+  .right .label {
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  .left .label {
+    right: calc(100% + 0.5rem);
+    text-align: right;
+  }
+
+  .right .label {
+    left: calc(100% + 0.5rem);
+    text-align: left;
+  }
+
+  .mark:hover .label,
+  .mark:focus-visible .label {
+    text-decoration: underline;
   }
 
   .mark:hover .pip,
@@ -293,32 +274,9 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
     border-color: var(--leap);
   }
 
-  .hint {
-    position: absolute;
-    bottom: 1.6rem;
-    left: 50%;
-    translate: -50% 0;
-    margin: 0;
-    color: var(--ink-faint);
-    font-size: 0.625rem;
-  }
-
   @media (max-width: 40rem) {
-    .dialplate {
-      width: min(94vmin, 30rem);
-    }
-
-    .mark {
-      max-width: 6rem;
-    }
-
     .label {
-      font-size: 0.5625rem;
-      padding: 0.25rem 0.45rem;
-    }
-
-    .core {
-      width: 66%;
+      font-size: 0.75rem;
     }
   }
 </style>
@@ -333,8 +291,6 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
     const hourHand = plate.querySelector<SVGGElement>('[data-hand="hour"]')!;
     const minuteHand = plate.querySelector<SVGGElement>('[data-hand="minute"]')!;
     const pointer = plate.querySelector<SVGGElement>('[data-pointer]')!;
-    const easternOut = plate.querySelector<HTMLElement>('[data-eastern]')!;
-    const zoneOut = plate.querySelector<HTMLElement>('[data-zone]')!;
     const marks = Array.from(plate.querySelectorAll<HTMLAnchorElement>('[data-mark]'));
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
     const easternFormatter = new Intl.DateTimeFormat('en-US', {
@@ -343,7 +299,6 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-      timeZoneName: 'short',
     });
 
     /** Degrees a second. Every swing runs at this speed, so a short move is
@@ -354,7 +309,6 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
     /** Brushing the cursor past a mark should not fling the hand. */
     const INTENT_MS = 130;
 
-    const pad = (n: number) => String(n).padStart(2, '0');
     const wrap = (deg: number) => ((deg % 360) + 360) % 360;
 
     // Unwrapped, so the hand only ever advances. Setting a raw 0-360 bearing
@@ -384,8 +338,6 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
       easternHour = Number(parts.hour);
       easternMinute = Number(parts.minute);
       easternSecond = Number(parts.second);
-      easternOut.textContent = `${pad(easternHour)}:${pad(easternMinute)}:${pad(easternSecond)}`;
-      zoneOut.textContent = parts.timeZoneName ?? 'ET';
     };
 
     /** Forward distance from where the hand is to a 0-360 bearing. */

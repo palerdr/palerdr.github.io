@@ -44,16 +44,19 @@
   --font-serif: var(--font-body);
   --font-mono: var(--font-body);
 
-  --measure: 34rem;
-  --page: 62rem;
-  --gutter: clamp(1.25rem, 5vw, 4rem);
+  --sidebar: 18rem;
+  --measure: 38rem;
+  --page: 44rem;
+  --gutter: max(1rem, 16px);
 
-  --step--1: 0.8125rem;
-  --step-0: 1.125rem;
-  --step-1: 1.1875rem;
-  --step-2: clamp(1.4rem, 1.1rem + 1.1vw, 1.85rem);
-  --step-3: clamp(1.9rem, 1.4rem + 2.2vw, 2.9rem);
-  --step-4: clamp(2.4rem, 1.5rem + 4.2vw, 4.6rem);
+  /* Hyde's scale on Poole's root sizes (below): body 1rem, h3 1.25rem,
+     h2 1.5rem, h1 2rem. */
+  --step--1: 0.85rem;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.5rem;
+  --step-3: 2rem;
+  --step-4: 3.25rem;
 
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 
@@ -66,18 +69,36 @@
   box-sizing: border-box;
 }
 
+/* Root sizes from Poole and Hyde, so every rem on the site scales with them. */
 html {
+  font-size: 14px;
   scroll-behavior: smooth;
-  scroll-padding-top: 5.5rem;
   -webkit-text-size-adjust: 100%;
   background: var(--paper);
+}
+
+@media (min-width: 38em) {
+  html {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 48em) {
+  html {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 58em) {
+  html {
+    font-size: 20px;
+  }
 }
 
 body {
   margin: 0;
   color: var(--ink);
-  font-family: var(--font-body), ui-serif, Georgia, serif;
-  font-variant-ligatures: common-ligatures contextual;
+  font-family: var(--font-body), Helvetica, Arial, sans-serif;
   font-size: var(--step-0);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -90,12 +111,24 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-display), ui-serif, Georgia, serif;
+  font-family: var(--font-display), Helvetica, Arial, sans-serif;
   font-weight: 700;
-  line-height: 1.14;
+  line-height: 1.25;
   letter-spacing: normal;
   margin: 0;
   text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--step-3);
+}
+
+h2 {
+  font-size: var(--step-2);
+}
+
+h3 {
+  font-size: var(--step-1);
 }
 
 p {
@@ -125,18 +158,32 @@ a:hover {
   background: #ebebe8;
 }
 
-.wrap {
-  width: 100%;
-  max-width: var(--page);
-  margin-inline: auto;
-  padding-inline: var(--gutter);
+/* The column beside the sidebar. */
+.content {
+  padding: 2.5rem var(--gutter) 4rem;
 }
 
-.mono {
-  font-family: var(--font-body), ui-serif, Georgia, serif;
-  font-size: var(--step--1);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+@media (min-width: 48em) {
+  .content {
+    margin-left: var(--sidebar);
+    padding: 4rem 2rem;
+  }
+}
+
+@media (min-width: 64em) {
+  .content {
+    padding-inline: 4rem;
+  }
+}
+
+/* One page of a tab, centred in the column as Hyde centres its container. */
+.page {
+  max-width: var(--page);
+  margin-inline: auto;
+}
+
+.page > h1 {
+  margin-bottom: 1.5rem;
 }
 
 .muted {

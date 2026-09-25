@@ -1,0 +1,14 @@
+{
+  "source": "src/dth_compact/main.py: revival_probability, survives_injection, build_table",
+  "p0": 0.95,
+  "s_scale": 240,
+  "t_base": 0.75,
+  "t_scale": 60,
+  "max_s_alive": 239,
+  "max_s_plus_t": 240,
+  "s_max": 299,
+  "t_max": 300,
+  "max_abs_gap_vs_solver": 0.0,
+  "reachable_pairs": 72600,
+  "reachable_positive": 16711
+}

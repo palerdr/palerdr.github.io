@@ -1,0 +1,293 @@
+{
+ "source": "algosplit backend/core/MainClasses.py Split.simulate_split; Rust parity via backend/core/rust_analysis.py",
+ "stimulus_duration_h": 48,
+ "maintenance_volume": 3,
+ "dataset": "schoenfeld",
+ "s_maintenance": 1.61,
+ "atrophy_rate_per_h": 0.013416666666666667,
+ "schedules": [
+  {
+   "key": "one",
+   "label": "6 sets Monday",
+   "session_hours": [
+    0
+   ],
+   "sets": [
+    {
+     "session": "Mon",
+     "hour": 0,
+     "set_in_session": 1,
+     "weight": 0.8,
+     "marginal": 1.0,
+     "cns": 0.9912646800376373,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.7930117440301099
+    },
+    {
+     "session": "Mon",
+     "hour": 0,
+     "set_in_session": 2,
+     "weight": 0.8,
+     "marginal": 0.3899999999999999,
+     "cns": 0.9830380655075737,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.30670787643836295
+    },
+    {
+     "session": "Mon",
+     "hour": 0,
+     "set_in_session": 3,
+     "weight": 0.8,
+     "marginal": 0.2200000000000002,
+     "cns": 0.9752905317116908,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.17165113358125772
+    },
+    {
+     "session": "Mon",
+     "hour": 0,
+     "set_in_session": 4,
+     "weight": 0.8,
+     "marginal": 0.15999999999999992,
+     "cns": 0.967994179159983,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.12390325493247777
+    },
+    {
+     "session": "Mon",
+     "hour": 0,
+     "set_in_session": 5,
+     "weight": 0.8,
+     "marginal": 0.1299999999999999,
+     "cns": 0.9611227331022577,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.09995676424263472
+    },
+    {
+     "session": "Mon",
+     "hour": 0,
+     "set_in_session": 6,
+     "weight": 0.8,
+     "marginal": 0.10000000000000009,
+     "cns": 0.9546514489106547,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.07637211591285245
+    }
+   ],
+   "windows": [
+    [
+     0,
+     48
+    ]
+   ],
+   "idle": [
+    [
+     48,
+     168
+    ]
+   ],
+   "idle_hours": 120,
+   "stimulus": 1.5716028891376956,
+   "atrophy": 1.61,
+   "net": -0.03839711086230446
+  },
+  {
+   "key": "thu",
+   "label": "3 Monday, 3 Thursday",
+   "session_hours": [
+    0,
+    72
+   ],
+   "sets": [
+    {
+     "session": "Mon",
+     "hour": 0,
+     "set_in_session": 1,
+     "weight": 0.8,
+     "marginal": 1.0,
+     "cns": 0.9912646800376373,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.7930117440301099
+    },
+    {
+     "session": "Mon",
+     "hour": 0,
+     "set_in_session": 2,
+     "weight": 0.8,
+     "marginal": 0.3899999999999999,
+     "cns": 0.9830380655075737,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.30670787643836295
+    },
+    {
+     "session": "Mon",
+     "hour": 0,
+     "set_in_session": 3,
+     "weight": 0.8,
+     "marginal": 0.2200000000000002,
+     "cns": 0.9752905317116908,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.17165113358125772
+    },
+    {
+     "session": "Thu",
+     "hour": 72,
+     "set_in_session": 1,
+     "weight": 0.8,
+     "marginal": 1.0,
+     "cns": 0.9912646800376373,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.7930117440301099
+    },
+    {
+     "session": "Thu",
+     "hour": 72,
+     "set_in_session": 2,
+     "weight": 0.8,
+     "marginal": 0.3899999999999999,
+     "cns": 0.9830380655075737,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.30670787643836295
+    },
+    {
+     "session": "Thu",
+     "hour": 72,
+     "set_in_session": 3,
+     "weight": 0.8,
+     "marginal": 0.2200000000000002,
+     "cns": 0.9752905317116908,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.17165113358125772
+    }
+   ],
+   "windows": [
+    [
+     0,
+     48
+    ],
+    [
+     72,
+     120
+    ]
+   ],
+   "idle": [
+    [
+     48,
+     72
+    ],
+    [
+     120,
+     168
+    ]
+   ],
+   "idle_hours": 72,
+   "stimulus": 2.5427415080994615,
+   "atrophy": 0.966,
+   "net": 1.5767415080994616
+  },
+  {
+   "key": "tue",
+   "label": "3 Monday, 3 Tuesday",
+   "session_hours": [
+    0,
+    24
+   ],
+   "sets": [
+    {
+     "session": "Mon",
+     "hour": 0,
+     "set_in_session": 1,
+     "weight": 0.8,
+     "marginal": 1.0,
+     "cns": 0.9912646800376373,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.7930117440301099
+    },
+    {
+     "session": "Mon",
+     "hour": 0,
+     "set_in_session": 2,
+     "weight": 0.8,
+     "marginal": 0.3899999999999999,
+     "cns": 0.9830380655075737,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.30670787643836295
+    },
+    {
+     "session": "Mon",
+     "hour": 0,
+     "set_in_session": 3,
+     "weight": 0.8,
+     "marginal": 0.2200000000000002,
+     "cns": 0.9752905317116908,
+     "recovery": 1.0,
+     "consecutive_day": 1.0,
+     "stimulus": 0.17165113358125772
+    },
+    {
+     "session": "Tue",
+     "hour": 24,
+     "set_in_session": 1,
+     "weight": 0.8,
+     "marginal": 1.0,
+     "cns": 0.9912646800376373,
+     "recovery": 0.5,
+     "consecutive_day": 0.9248,
+     "stimulus": 0.3666886304395228
+    },
+    {
+     "session": "Tue",
+     "hour": 24,
+     "set_in_session": 2,
+     "weight": 0.8,
+     "marginal": 0.3899999999999999,
+     "cns": 0.9830380655075737,
+     "recovery": 0.5,
+     "consecutive_day": 0.9248,
+     "stimulus": 0.14182172206509902
+    },
+    {
+     "session": "Tue",
+     "hour": 24,
+     "set_in_session": 3,
+     "weight": 0.8,
+     "marginal": 0.2200000000000002,
+     "cns": 0.9752905317116908,
+     "recovery": 0.5,
+     "consecutive_day": 0.9248,
+     "stimulus": 0.07937148416797357
+    }
+   ],
+   "windows": [
+    [
+     0,
+     72
+    ]
+   ],
+   "idle": [
+    [
+     72,
+     168
+    ]
+   ],
+   "idle_hours": 96,
+   "stimulus": 1.859252590722326,
+   "atrophy": 1.288,
+   "net": 0.571252590722326
+  }
+ ]
+}

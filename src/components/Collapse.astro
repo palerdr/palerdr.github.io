@@ -8,16 +8,14 @@ const RATIO = 289_374_121 / 5_267_489_760;
 ---
 
 <figure class="collapse" data-reveal>
-  <figcaption class="mono">What made it solvable</figcaption>
-
   <div class="row">
-    <p class="bar-label mono">Written out directly</p>
+    <p class="bar-label">Written out directly</p>
     <div class="bar full" style="width:100%"></div>
     <p class="figure">5,267,489,760 <span class="muted">reachable states</span></p>
   </div>
 
   <div class="row">
-    <p class="bar-label mono">After the per-player quotient</p>
+    <p class="bar-label">After the per-player quotient</p>
     <div class="bar cut" style={`width:${(RATIO * 100).toFixed(2)}%`}></div>
     <p class="figure">289,374,121 <span class="muted">equivalence classes</span></p>
   </div>
@@ -32,15 +30,9 @@ const RATIO = 289_374_121 / 5_267_489_760;
 
 <style>
   .collapse {
-    margin: 2.75rem 0;
+    margin: 2rem 0;
     padding-top: 1.5rem;
     border-top: 1px solid var(--line);
-  }
-
-  figcaption {
-    color: var(--ink-faint);
-    font-size: 0.6875rem;
-    margin-bottom: 1.5rem;
   }
 
   .row {
@@ -48,11 +40,8 @@ const RATIO = 289_374_121 / 5_267_489_760;
   }
 
   .bar-label {
-    margin: 0 0 0.5rem;
-    color: var(--ink-faint);
-    font-size: 0.625rem;
-    text-transform: none;
-    letter-spacing: 0.06em;
+    margin: 0 0 0.4rem;
+    color: var(--ink);
   }
 
   .bar {
@@ -77,16 +66,13 @@ const RATIO = 289_374_121 / 5_267_489_760;
 
   .figure .muted {
     font-weight: 400;
-    font-size: var(--step--1);
-    color: var(--ink-faint);
+    color: var(--ink-dim);
   }
 
   .note {
     margin: 0;
     max-width: var(--measure);
     color: var(--ink-dim);
-    font-size: var(--step--1);
-    line-height: 1.6;
   }
 
   .note strong {

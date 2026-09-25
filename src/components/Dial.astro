@@ -58,7 +58,6 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
         <polygon points="118.5,120 121.5,120 120,26" />
       </g>
 
-      <circle class="hub" cx="120" cy="120" r="4.5" />
     </svg>
 
     <button
@@ -74,12 +73,11 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
 
     <div class="readout" aria-hidden="true">
       <span class="value" data-value>{String(START).padStart(2, '0')}</span>
-      <span class="unit mono">sec</span>
     </div>
   </div>
 
   <figcaption>
-    <p class="state mono" data-state>Pick a second</p>
+    <p class="state" data-state>Pick a second</p>
     <p class="note muted">
       The opening round of <em>Surpassing the Leader</em>. Both players commit to a second between
       1 and 60 at the same time, and neither sees the other's choice.
@@ -154,6 +152,13 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
     text-anchor: middle;
   }
 
+  /* On a phone the face is too small for readable numerals. */
+  @media (max-width: 38em) {
+    .numeral {
+      display: none;
+    }
+  }
+
   .hand polygon {
     fill: var(--ink);
     stroke: none;
@@ -164,12 +169,6 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
     transform-origin: 120px 120px;
     transform: rotate(222deg);
     transition: transform 0.32s var(--ease);
-  }
-
-  .hub {
-    fill: var(--paper-lift);
-    stroke: var(--tint);
-    stroke-width: 1.2;
   }
 
   /* Transparent pointer/keyboard target laid over the face. */
@@ -193,17 +192,15 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
     pointer-events: none;
   }
 
+  /* The paper ground hides the pivot end of the hand behind the numeral. */
   .value {
+    padding: 0 0.15em;
+    border-radius: 0.2em;
+    background: var(--paper);
     font-family: var(--font-display), serif;
     font-size: clamp(2.4rem, 6vw, 3.4rem);
     line-height: 1;
     font-variant-numeric: tabular-nums;
-  }
-
-  .unit {
-    color: var(--ink-faint);
-    font-size: 0.6875rem;
-    margin-top: 0.35rem;
   }
 
   figcaption {
@@ -212,17 +209,13 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
   }
 
   .state {
-    margin: 0 0 0.5rem;
+    margin: 0 0 0.35rem;
     color: var(--tint);
-    font-size: 0.6875rem;
+    font-weight: 700;
   }
 
   .dial[data-committed] .state {
     color: var(--leap);
-  }
-
-  .dial[data-committed] .hub {
-    fill: var(--leap);
   }
 
   .note {

@@ -1,0 +1,52 @@
+---
+import Base from '../layouts/Base.astro';
+import { profile, experience, education } from '../data/site';
+---
+
+<Base title={`Experience — ${profile.name}`} tab="experience" home={{ angle: 60 }}>
+  <div class="page">
+    <h1>Experience</h1>
+
+    <ul class="roles">
+      {
+        experience.map((role) => (
+          <li>
+            <strong>{role.orgUrl ? <a href={role.orgUrl}>{role.org}</a> : role.org}</strong>, {role.title},{' '}
+            {role.dates}. {role.line}
+            {role.readMore && (
+              <>
+                {' '}
+                <a href={role.readMore}>Write-up</a>
+              </>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+
+    <h2>Education</h2>
+    <p class="line">
+      <strong>{education.school}</strong>, {education.degree}, {education.dates}. GPA {education.gpa}.
+    </p>
+  </div>
+</Base>
+
+<style>
+  .roles {
+    margin: 0 0 2.5rem;
+    padding-left: 1.2rem;
+    max-width: var(--measure);
+  }
+
+  .roles li {
+    margin-bottom: 0.75rem;
+  }
+
+  h2 {
+    margin-bottom: 0.75rem;
+  }
+
+  .line {
+    max-width: var(--measure);
+  }
+</style>
