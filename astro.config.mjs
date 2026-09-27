@@ -21,20 +21,13 @@ export default defineConfig({
       rehypePlugins: [rehypeKatex],
     }),
   },
-  // The pairing from oneraynyday.github.io (Hyde): PT Sans for the text and
-  // Abril Fatface for the name in the sidebar.
+  // One family for the whole site. Benne ships a single weight and no italic,
+  // so bold and oblique are synthesised.
   fonts: [
     {
       provider: fontProviders.fontsource(),
-      name: 'PT Sans',
+      name: 'Benne',
       cssVariable: '--font-body',
-      weights: [400, 700],
-      styles: ['normal', 'italic'],
-    },
-    {
-      provider: fontProviders.fontsource(),
-      name: 'Abril Fatface',
-      cssVariable: '--font-title',
       weights: [400],
       styles: ['normal'],
     },
