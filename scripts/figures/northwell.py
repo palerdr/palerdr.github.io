@@ -92,7 +92,7 @@ def term_overlap() -> None:
     ax.set_ylim(0, H)
     ax.axis("off")
 
-    label = dict(fontsize=11.5, color=style.INK_DIM)
+    label = dict(fontsize=11.5, color=style.INK)
     body = dict(fontsize=12.5, color=style.INK)
     x0 = 0.02
 

@@ -55,7 +55,7 @@ L 0 3.5
      </g>
      <g id="text_1">
       <!-- 0 -->
-      <g style="fill: #383838" transform="translate(52.672359 187.74452) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(52.672359 187.74452) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-13" d="M 275 2240 
 Q 275 3392 649 3974 
@@ -95,7 +95,7 @@ z
      </g>
      <g id="text_2">
       <!-- 10 -->
-      <g style="fill: #383838" transform="translate(116.757511 187.74452) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(116.757511 187.74452) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-14" d="M 691 474 
 L 1587 474 
@@ -127,7 +127,7 @@ z
      </g>
      <g id="text_3">
       <!-- 20 -->
-      <g style="fill: #383838" transform="translate(183.976413 187.74452) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(183.976413 187.74452) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-15" d="M 2854 3462 
 Q 2854 3123 2729 2768 
@@ -174,7 +174,7 @@ z
      </g>
      <g id="text_4">
       <!-- 30 -->
-      <g style="fill: #383838" transform="translate(251.195314 187.74452) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(251.195314 187.74452) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-16" d="M 1498 371 
 Q 1715 371 1900 435 
@@ -225,7 +225,7 @@ z
      </g>
      <g id="text_5">
       <!-- 40 -->
-      <g style="fill: #383838" transform="translate(318.414216 187.74452) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(318.414216 187.74452) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-17" d="M 3354 1376 
 L 2598 1376 
@@ -265,7 +265,7 @@ z
      </g>
      <g id="text_6">
       <!-- 50 -->
-      <g style="fill: #383838" transform="translate(385.633118 187.74452) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(385.633118 187.74452) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-18" d="M 1363 371 
 Q 1805 371 2093 627 
@@ -306,7 +306,7 @@ z
      </g>
      <g id="text_7">
       <!-- 59 -->
-      <g style="fill: #383838" transform="translate(446.13013 187.74452) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(446.13013 187.74452) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-1c" d="M 333 3123 
 Q 333 3430 422 3692 
@@ -773,7 +773,7 @@ L -3.5 0
      </g>
      <g id="text_9">
       <!-- 0.45 -->
-      <g style="fill: #383838" transform="translate(20.82 167.600466) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 167.600466) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-11" d="M 314 294 
 Q 314 467 413 566 
@@ -802,7 +802,7 @@ z
      </g>
      <g id="text_10">
       <!-- 0.50 -->
-      <g style="fill: #383838" transform="translate(20.82 123.442698) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 123.442698) scale(0.115 -0.115)">
        <use xlink:href="#PTSans-Regular-13"/>
        <use xlink:href="#PTSans-Regular-11" transform="translate(54.5 0)"/>
        <use xlink:href="#PTSans-Regular-18" transform="translate(75.90625 0)"/>
@@ -818,7 +818,7 @@ z
      </g>
      <g id="text_11">
       <!-- 0.55 -->
-      <g style="fill: #383838" transform="translate(20.82 79.284929) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 79.284929) scale(0.115 -0.115)">
        <use xlink:href="#PTSans-Regular-13"/>
        <use xlink:href="#PTSans-Regular-11" transform="translate(54.5 0)"/>
        <use xlink:href="#PTSans-Regular-18" transform="translate(75.90625 0)"/>
@@ -834,7 +834,7 @@ z
      </g>
      <g id="text_12">
       <!-- 0.60 -->
-      <g style="fill: #383838" transform="translate(20.82 35.127161) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 35.127161) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-19" d="M 3149 1350 
 Q 3149 1056 3059 797 

@@ -69,7 +69,7 @@ L 313.72875 112.32
    </g>
    <g id="text_1">
     <!-- Question that names the column -->
-    <g style="fill: #383838" transform="translate(5.76 18) scale(0.115 -0.115)">
+    <g style="fill: #0a0a0a" transform="translate(5.76 18) scale(0.115 -0.115)">
      <defs>
       <path id="PTSans-Regular-34" d="M 4506 -1094 
 Q 4352 -1139 4205 -1155 
@@ -490,7 +490,7 @@ z
    </g>
    <g id="text_2">
     <!-- 3 shared words -->
-    <g style="fill: #383838" transform="translate(389.070156 18) scale(0.115 -0.115)">
+    <g style="fill: #0a0a0a" transform="translate(389.070156 18) scale(0.115 -0.115)">
      <defs>
       <path id="PTSans-Regular-16" d="M 1498 371 
 Q 1715 371 1900 435 
@@ -1011,7 +1011,7 @@ z
    </g>
    <g id="text_18">
     <!-- Schema -->
-    <g style="fill: #383838" transform="translate(355.84875 98.5) scale(0.115 -0.115)">
+    <g style="fill: #0a0a0a" transform="translate(355.84875 98.5) scale(0.115 -0.115)">
      <defs>
       <path id="PTSans-Regular-36" d="M 2566 1139 
 Q 2566 1408 2406 1577 
@@ -1059,7 +1059,7 @@ z
      <use xlink:href="#PTSans-Regular-44" transform="translate(284.890625 0)"/>
     </g>
     <!-- entry -->
-    <g style="fill: #383838" transform="translate(355.84875 109.52293) scale(0.115 -0.115)">
+    <g style="fill: #0a0a0a" transform="translate(355.84875 109.52293) scale(0.115 -0.115)">
      <use xlink:href="#PTSans-Regular-48"/>
      <use xlink:href="#PTSans-Regular-51" transform="translate(50.796875 0)"/>
      <use xlink:href="#PTSans-Regular-57" transform="translate(105.5 0)"/>
@@ -1252,7 +1252,7 @@ z
    </g>
    <g id="text_29">
     <!-- Question in business language -->
-    <g style="fill: #383838" transform="translate(5.76 182.16) scale(0.115 -0.115)">
+    <g style="fill: #0a0a0a" transform="translate(5.76 182.16) scale(0.115 -0.115)">
      <use xlink:href="#PTSans-Regular-34"/>
      <use xlink:href="#PTSans-Regular-58" transform="translate(68.40625 0)"/>
      <use xlink:href="#PTSans-Regular-48" transform="translate(122.3125 0)"/>
@@ -1286,7 +1286,7 @@ z
    </g>
    <g id="text_30">
     <!-- 0 shared words -->
-    <g style="fill: #383838" transform="translate(389.070156 182.16) scale(0.115 -0.115)">
+    <g style="fill: #0a0a0a" transform="translate(389.070156 182.16) scale(0.115 -0.115)">
      <defs>
       <path id="PTSans-Regular-13" d="M 275 2240 
 Q 275 3392 649 3974 
@@ -1332,7 +1332,7 @@ z
    </g>
    <g id="text_31">
     <!-- same word -->
-    <g style="fill: #383838" transform="translate(173.01375 66.235) scale(0.115 -0.115)">
+    <g style="fill: #0a0a0a" transform="translate(173.01375 66.235) scale(0.115 -0.115)">
      <use xlink:href="#PTSans-Regular-56"/>
      <use xlink:href="#PTSans-Regular-44" transform="translate(42.09375 0)"/>
      <use xlink:href="#PTSans-Regular-50" transform="translate(91.6875 0)"/>
@@ -1346,7 +1346,7 @@ z
    </g>
    <g id="text_32">
     <!-- same meaning, -->
-    <g style="fill: #383838" transform="translate(323.80875 126.126641) scale(0.115 -0.115)">
+    <g style="fill: #0a0a0a" transform="translate(323.80875 126.126641) scale(0.115 -0.115)">
      <defs>
       <path id="PTSans-Regular-f" d="M 314 275 
 Q 314 429 416 525 
@@ -1381,7 +1381,7 @@ z
      <use xlink:href="#PTSans-Regular-f" transform="translate(621.890625 0)"/>
     </g>
     <!-- no shared word -->
-    <g style="fill: #383838" transform="translate(323.80875 139.88082) scale(0.115 -0.115)">
+    <g style="fill: #0a0a0a" transform="translate(323.80875 139.88082) scale(0.115 -0.115)">
      <use xlink:href="#PTSans-Regular-51"/>
      <use xlink:href="#PTSans-Regular-52" transform="translate(54.703125 0)"/>
      <use xlink:href="#PTSans-Regular-3" transform="translate(108.296875 0)"/>

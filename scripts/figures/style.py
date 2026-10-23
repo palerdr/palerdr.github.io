@@ -27,11 +27,11 @@ SITE = HERE.parents[1]
 ASSETS = SITE / "src" / "assets" / "figures"
 PROJECTS = SITE.parent
 
-# The site's tokens (src/styles/global.css). Red and black carry the figures:
-# red for the series a paragraph is about, black for the one it is set against.
+# The site's tokens (src/styles/global.css). All text is INK. Red and black carry
+# the figures: red for the series a paragraph is about, black for the one it is
+# set against.
 # Figures use lines, points and flat marks, and no color gradients.
 INK = "#0a0a0a"
-INK_DIM = "#383838"
 AXIS = "#c9c9c4"
 GRID = "#e3e3e0"
 PAPER = "#ffffff"
@@ -70,8 +70,8 @@ def use() -> None:
             "grid.linestyle": "-",
             "xtick.color": AXIS,
             "ytick.color": AXIS,
-            "xtick.labelcolor": INK_DIM,
-            "ytick.labelcolor": INK_DIM,
+            "xtick.labelcolor": INK,
+            "ytick.labelcolor": INK,
             "xtick.labelsize": 11.5,
             "ytick.labelsize": 11.5,
             "xtick.major.width": 0.75,

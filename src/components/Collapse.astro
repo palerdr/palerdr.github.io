@@ -11,20 +11,18 @@ const RATIO = 289_374_121 / 5_267_489_760;
   <div class="row">
     <p class="bar-label">Written out directly</p>
     <div class="bar full" style="width:100%"></div>
-    <p class="figure">5,267,489,760 <span class="muted">reachable states</span></p>
+    <p class="figure">5,267,489,760 <span class="unit">reachable states</span></p>
   </div>
 
   <div class="row">
     <p class="bar-label">After the per-player quotient</p>
     <div class="bar cut" style={`width:${(RATIO * 100).toFixed(2)}%`}></div>
-    <p class="figure">289,374,121 <span class="muted">equivalence classes</span></p>
+    <p class="figure">289,374,121 <span class="unit">equivalence classes</span></p>
   </div>
 
   <p class="note">
-    An 18.2× collapse, sorted by a potential function into <strong>1,201 layers</strong> that solve
-    in one backward sweep with no search and no reachability analysis. It turned a computation
-    projected at <strong>5 years</strong> on one core into <strong>50 seconds</strong> on
-    a laptop.
+    The quotient makes the game <strong>18.2×</strong> smaller. The solve takes <strong>50 seconds</strong> on
+    a laptop, against <strong>5 years</strong> projected on one core.
   </p>
 </figure>
 
@@ -64,18 +62,12 @@ const RATIO = 289_374_121 / 5_267_489_760;
     font-variant-numeric: tabular-nums;
   }
 
-  .figure .muted {
+  .figure .unit {
     font-weight: 400;
-    color: var(--ink-dim);
   }
 
   .note {
     margin: 0;
     max-width: var(--measure);
-    color: var(--ink-dim);
-  }
-
-  .note strong {
-    color: var(--ink);
   }
 </style>

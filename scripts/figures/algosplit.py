@@ -80,7 +80,7 @@ def week_timeline(data: dict) -> None:
             ax.plot([t], [y], marker="o", markersize=8, color=style.INK,
                     markeredgewidth=0, clip_on=False, zorder=3)
             ax.text(t + 2.5, y - h / 2 - 0.06, names[t], ha="left", va="top",
-                    fontsize=11.5, color=style.INK_DIM)
+                    fontsize=11.5, color=style.INK)
         ax.text(176, y, f"{row['atrophy']:.3f}", ha="left", va="center",
                 fontsize=12, color=style.INK)
     # Name the grey mark once, in the top row.
@@ -88,7 +88,7 @@ def week_timeline(data: dict) -> None:
     ax.text((lo + hi) / 2, ys[0] + h / 2 + 0.06, f"{hi - lo} h window", ha="center",
             va="bottom", fontsize=11.5, color=style.INK)
     ax.text(176, ys[0] + h / 2 + 0.06, "Atrophy", ha="left", va="bottom",
-            fontsize=11.5, color=style.INK_DIM)
+            fontsize=11.5, color=style.INK)
     ax.set_yticks(ys, [r["label"] for r in rows])
     ax.tick_params(axis="y", length=0, pad=12, labelsize=12, labelcolor=style.INK)
     ax.spines["left"].set_visible(False)

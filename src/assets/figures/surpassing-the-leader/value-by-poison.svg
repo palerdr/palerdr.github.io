@@ -55,7 +55,7 @@ L 0 3.5
      </g>
      <g id="text_1">
       <!-- 0 -->
-      <g style="fill: #383838" transform="translate(45.950469 187.742266) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(45.950469 187.742266) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-13" d="M 275 2240 
 Q 275 3392 649 3974 
@@ -95,7 +95,7 @@ z
      </g>
      <g id="text_2">
       <!-- 60 -->
-      <g style="fill: #383838" transform="translate(122.943529 187.742266) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(122.943529 187.742266) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-19" d="M 3149 1350 
 Q 3149 1056 3059 797 
@@ -151,7 +151,7 @@ z
      </g>
      <g id="text_3">
       <!-- 120 -->
-      <g style="fill: #383838" transform="translate(199.936589 187.742266) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(199.936589 187.742266) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-14" d="M 691 474 
 L 1587 474 
@@ -215,7 +215,7 @@ z
      </g>
      <g id="text_4">
       <!-- 180 -->
-      <g style="fill: #383838" transform="translate(280.0634 187.742266) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(280.0634 187.742266) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-1b" d="M 435 1069 
 Q 435 1472 646 1769 
@@ -293,7 +293,7 @@ z
      </g>
      <g id="text_5">
       <!-- 240 -->
-      <g style="fill: #383838" transform="translate(360.19021 187.742266) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(360.19021 187.742266) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-17" d="M 3354 1376 
 L 2598 1376 
@@ -334,7 +334,7 @@ z
      </g>
      <g id="text_6">
       <!-- 300 -->
-      <g style="fill: #383838" transform="translate(440.31702 187.742266) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(440.31702 187.742266) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-16" d="M 1498 371 
 Q 1715 371 1900 435 
@@ -911,7 +911,7 @@ L -3.5 0
      </g>
      <g id="text_8">
       <!-- 0.00 -->
-      <g style="fill: #383838" transform="translate(20.82 176.429766) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 176.429766) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-11" d="M 314 294 
 Q 314 467 413 566 
@@ -940,7 +940,7 @@ z
      </g>
      <g id="text_9">
       <!-- 0.25 -->
-      <g style="fill: #383838" transform="translate(20.82 135.558574) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 135.558574) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-18" d="M 1363 371 
 Q 1805 371 2093 627 
@@ -983,7 +983,7 @@ z
      </g>
      <g id="text_10">
       <!-- 0.50 -->
-      <g style="fill: #383838" transform="translate(20.82 94.687383) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 94.687383) scale(0.115 -0.115)">
        <use xlink:href="#PTSans-Regular-13"/>
        <use xlink:href="#PTSans-Regular-11" transform="translate(54.5 0)"/>
        <use xlink:href="#PTSans-Regular-18" transform="translate(75.90625 0)"/>
@@ -999,7 +999,7 @@ z
      </g>
      <g id="text_11">
       <!-- 0.75 -->
-      <g style="fill: #383838" transform="translate(20.82 53.816191) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 53.816191) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-1a" d="M 704 0 
 L 2310 3750 
@@ -1029,7 +1029,7 @@ z
      </g>
      <g id="text_12">
       <!-- 1.00 -->
-      <g style="fill: #383838" transform="translate(20.82 12.945) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 12.945) scale(0.115 -0.115)">
        <use xlink:href="#PTSans-Regular-14"/>
        <use xlink:href="#PTSans-Regular-11" transform="translate(54.5 0)"/>
        <use xlink:href="#PTSans-Regular-13" transform="translate(75.90625 0)"/>

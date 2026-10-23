@@ -9,16 +9,10 @@ interface Props {
 const { entry, index } = Astro.props;
 const { title, tagline, summary, award, stats, links, writeup } = entry.data;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-
-const suits = ['♠', '♥', '♦', '♣'];
-const suit = suits[index % suits.length];
 const panel = `panel-${entry.id}`;
 ---
 
 <article class="card" data-card data-reveal data-first={index === 0 ? '' : undefined}>
-  <span class="pip top" aria-hidden="true">{suit}</span>
-  <span class="pip bottom" aria-hidden="true">{suit}</span>
-
   <button class="head" type="button" data-toggle aria-expanded="true" aria-controls={panel}>
     <span class="headings">
       <span class="title">{title}</span>
@@ -46,7 +40,7 @@ const panel = `panel-${entry.id}`;
       }
 
       <p class="links">
-        {writeup && <a class="primary" href={`${base}/projects/${entry.id}`}>Read the write-up →</a>}
+        {writeup && <a class="primary" href={`${base}/projects/${entry.id}`}>Project →</a>}
         {links.map((l) => <a href={l.href}>{l.label} ↗</a>)}
       </p>
     </div>
@@ -70,33 +64,6 @@ const panel = `panel-${entry.id}`;
     border-top-color: var(--line-strong);
   }
 
-  .pip {
-    position: absolute;
-    font-size: 0.9375rem;
-    line-height: 1;
-    color: var(--ink-faint);
-    pointer-events: none;
-    transition: color 0.35s var(--ease);
-  }
-
-  /* Opposite corners, the way a card carries them, but in the page gutter:
-     outside the text column, so no line of copy can ever run into one. */
-  .pip.top {
-    top: 1.6rem;
-    right: -1.9rem;
-  }
-
-  .pip.bottom {
-    bottom: 1.6rem;
-    left: -1.9rem;
-    rotate: 180deg;
-  }
-
-  .card:hover .pip,
-  .card[data-open] .pip {
-    color: var(--leap);
-  }
-
   .head {
     all: unset;
     box-sizing: border-box;
@@ -105,7 +72,7 @@ const panel = `panel-${entry.id}`;
     gap: 1.5rem;
     width: 100%;
     cursor: pointer;
-    padding: 1.9rem 2.5rem 1.4rem 0;
+    padding: 1.9rem 0 1.4rem;
   }
 
   .head:focus-visible {
@@ -129,12 +96,10 @@ const panel = `panel-${entry.id}`;
   .tagline {
     font-size: var(--step-1);
     line-height: 1.35;
-    color: var(--ink-dim);
     max-width: 42ch;
   }
 
   .award {
-    color: var(--ink);
     font-weight: 700;
   }
 
@@ -172,7 +137,6 @@ const panel = `panel-${entry.id}`;
   .summary {
     max-width: var(--measure);
     margin: 0 0 1.5rem;
-    color: var(--ink-dim);
   }
 
   /* The metrics, written out in one plain box: the figure in bold, then what it
@@ -183,7 +147,6 @@ const panel = `panel-${entry.id}`;
     margin: 0 0 1.5rem;
     padding: 0.75rem 1rem;
     border: 1px solid var(--line-strong);
-    border-radius: 4px;
   }
 
   .plate {
@@ -199,11 +162,6 @@ const panel = `panel-${entry.id}`;
   .value {
     margin-right: 0.35em;
     font-weight: 700;
-    color: var(--ink);
-  }
-
-  .label {
-    color: var(--ink-dim);
   }
 
   .links {
@@ -218,31 +176,16 @@ const panel = `panel-${entry.id}`;
 
   .links a {
     text-decoration: none;
-    color: var(--ink-dim);
     border-bottom: 1px solid var(--line-strong);
     padding-bottom: 0.15rem;
   }
 
   .links a:hover {
-    color: var(--ink);
     border-bottom-color: currentColor;
   }
 
   .primary {
-    color: var(--ink) !important;
     font-weight: 700;
-  }
-
-  /* Below this the gutter is too narrow to hold them: bring the top pip back
-     inside against the chevron, and drop the bottom one. */
-  @media (max-width: 56rem) {
-    .pip.top {
-      right: 0;
-    }
-
-    .pip.bottom {
-      display: none;
-    }
   }
 </style>
 

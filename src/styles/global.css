@@ -26,7 +26,9 @@
 
   --surface-strong: #ffffff;
 
-  /* Type. Structure comes from weight and grey, not from colour. */
+  /* Type. All text is ink; structure comes from weight. The two greys are
+     for strokes only: the clock's hands and ticks, the card chevron and
+     dashed outlines. */
   --ink: #0a0a0a;
   --ink-dim: #383838;
   --ink-faint: #6d6d6d;
@@ -151,7 +153,6 @@ a:hover {
 :focus-visible {
   outline: 2px solid var(--tint);
   outline-offset: 3px;
-  border-radius: 4px;
 }
 
 ::selection {
@@ -184,10 +185,6 @@ a:hover {
 
 .page > h1 {
   margin-bottom: 1.5rem;
-}
-
-.muted {
-  color: var(--ink-dim);
 }
 
 .prose {

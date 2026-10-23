@@ -104,7 +104,7 @@ L -3.5 0
      </g>
      <g id="text_1">
       <!-- 0.0 -->
-      <g style="fill: #383838" transform="translate(20.82 109.69452) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 109.69452) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-13" d="M 275 2240 
 Q 275 3392 649 3974 
@@ -157,7 +157,7 @@ z
      </g>
      <g id="text_2">
       <!-- 0.5 -->
-      <g style="fill: #383838" transform="translate(20.82 61.31976) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 61.31976) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-18" d="M 1363 371 
 Q 1805 371 2093 627 
@@ -199,7 +199,7 @@ z
      </g>
      <g id="text_3">
       <!-- 1.0 -->
-      <g style="fill: #383838" transform="translate(20.82 12.945) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 12.945) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-14" d="M 691 474 
 L 1587 474 
@@ -567,7 +567,7 @@ z
      </g>
      <g id="text_7">
       <!-- 8:44 -->
-      <g style="fill: #383838" transform="translate(40.920129 230.94452) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(40.920129 230.94452) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-1b" d="M 435 1069 
 Q 435 1472 646 1769 
@@ -691,7 +691,7 @@ z
      </g>
      <g id="text_8">
       <!-- 8:47 -->
-      <g style="fill: #383838" transform="translate(106.65215 230.94452) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(106.65215 230.94452) scale(0.115 -0.115)">
        <use xlink:href="#PTSans-Regular-1b"/>
        <use xlink:href="#PTSans-Regular-1d" transform="translate(54.5 0)"/>
        <use xlink:href="#PTSans-Regular-17" transform="translate(76.40625 0)"/>
@@ -707,7 +707,7 @@ z
      </g>
      <g id="text_9">
       <!-- 8:50 -->
-      <g style="fill: #383838" transform="translate(172.384171 230.94452) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(172.384171 230.94452) scale(0.115 -0.115)">
        <use xlink:href="#PTSans-Regular-1b"/>
        <use xlink:href="#PTSans-Regular-1d" transform="translate(54.5 0)"/>
        <use xlink:href="#PTSans-Regular-18" transform="translate(76.40625 0)"/>
@@ -723,7 +723,7 @@ z
      </g>
      <g id="text_10">
       <!-- 8:53 -->
-      <g style="fill: #383838" transform="translate(238.116193 230.94452) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(238.116193 230.94452) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-16" d="M 1498 371 
 Q 1715 371 1900 435 
@@ -776,7 +776,7 @@ z
      </g>
      <g id="text_11">
       <!-- 8:56 -->
-      <g style="fill: #383838" transform="translate(303.848214 230.94452) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(303.848214 230.94452) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-19" d="M 3149 1350 
 Q 3149 1056 3059 797 
@@ -834,7 +834,7 @@ z
      </g>
      <g id="text_12">
       <!-- 8:59 -->
-      <g style="fill: #383838" transform="translate(369.580235 230.94452) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(369.580235 230.94452) scale(0.115 -0.115)">
        <defs>
         <path id="PTSans-Regular-1c" d="M 333 3123 
 Q 333 3430 422 3692 
@@ -1151,7 +1151,7 @@ z
      </g>
      <g id="text_14">
       <!-- 0.0 -->
-      <g style="fill: #383838" transform="translate(20.82 215.234315) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 215.234315) scale(0.115 -0.115)">
        <use xlink:href="#PTSans-Regular-13"/>
        <use xlink:href="#PTSans-Regular-11" transform="translate(54.5 0)"/>
        <use xlink:href="#PTSans-Regular-13" transform="translate(75.90625 0)"/>
@@ -1166,7 +1166,7 @@ z
      </g>
      <g id="text_15">
       <!-- 0.5 -->
-      <g style="fill: #383838" transform="translate(20.82 171.25726) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 171.25726) scale(0.115 -0.115)">
        <use xlink:href="#PTSans-Regular-13"/>
        <use xlink:href="#PTSans-Regular-11" transform="translate(54.5 0)"/>
        <use xlink:href="#PTSans-Regular-18" transform="translate(75.90625 0)"/>
@@ -1181,7 +1181,7 @@ z
      </g>
      <g id="text_16">
       <!-- 1.0 -->
-      <g style="fill: #383838" transform="translate(20.82 127.280205) scale(0.115 -0.115)">
+      <g style="fill: #0a0a0a" transform="translate(20.82 127.280205) scale(0.115 -0.115)">
        <use xlink:href="#PTSans-Regular-14"/>
        <use xlink:href="#PTSans-Regular-11" transform="translate(54.5 0)"/>
        <use xlink:href="#PTSans-Regular-13" transform="translate(75.90625 0)"/>

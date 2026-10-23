@@ -78,10 +78,6 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
 
   <figcaption>
     <p class="state" data-state>Pick a second</p>
-    <p class="note muted">
-      The opening round of <em>Surpassing the Leader</em>. Both players commit to a second between
-      1 and 60 at the same time, and neither sees the other's choice.
-    </p>
   </figcaption>
 </figure>
 
@@ -145,7 +141,7 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
   }
 
   .numeral {
-    fill: var(--ink-faint);
+    fill: var(--ink);
     font-family: var(--font-mono), monospace;
     font-size: 9px;
     letter-spacing: 0.08em;
@@ -195,7 +191,6 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
   /* The paper ground hides the pivot end of the hand behind the numeral. */
   .value {
     padding: 0 0.15em;
-    border-radius: 0.2em;
     background: var(--paper);
     font-family: var(--font-display), serif;
     font-size: clamp(2.4rem, 6vw, 3.4rem);
@@ -209,23 +204,13 @@ const ticks = Array.from({ length: 60 }, (_, i) => {
   }
 
   .state {
-    margin: 0 0 0.35rem;
+    margin: 0;
     color: var(--tint);
     font-weight: 700;
   }
 
   .dial[data-committed] .state {
     color: var(--leap);
-  }
-
-  .note {
-    margin: 0;
-    font-size: var(--step--1);
-    line-height: 1.55;
-  }
-
-  .note em {
-    font-family: var(--font-serif), serif;
   }
 </style>
 
