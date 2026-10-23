@@ -23,18 +23,18 @@ The agent turns a plain-English question into SQL for a hospital data warehouse.
 connection to patient data.
 
 <svg class="figure agent-flow" viewBox="0 0 400 352" role="img" aria-labelledby="agent-flow-title">
-<title id="agent-flow-title">A question goes to retrieval, then to the agent. The agent answers, asks to clarify, says it cannot answer, or drafts a query plan, and a validator checks the plan before a compiler writes the SQL. A red path runs from a wrong-table retrieval through the agent to the validator, and the validator passes it. Patient data sits apart with no connection.</title>
+<title id="agent-flow-title">A question goes to retrieval, then to the agent. The agent answers, asks to clarify, says it cannot answer, or drafts a query plan, and a validator checks the plan before a compiler writes the SQL. An orange path runs from a wrong-table retrieval through the agent to the validator, and the validator passes it. Patient data sits apart with no connection.</title>
 <defs>
 <marker id="af-ink" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" class="head"/></marker>
-<marker id="af-red" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" class="head red"/></marker>
+<marker id="af-fail" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" class="head fail"/></marker>
 </defs>
 <rect class="box" x="155" y="4" width="170" height="36"/>
 <text x="240" y="27">Question in plain English</text>
 <line class="edge" x1="240" y1="40" x2="240" y2="60" marker-end="url(#af-ink)"/>
 <rect class="box" x="155" y="62" width="170" height="36"/>
 <text x="240" y="85">Retrieve schema docs</text>
-<text class="red" x="331" y="85" text-anchor="start">wrong table</text>
-<line class="edge red" x1="240" y1="98" x2="240" y2="118" marker-end="url(#af-red)"/>
+<text class="fail" x="331" y="85" text-anchor="start">wrong table</text>
+<line class="edge fail" x1="240" y1="98" x2="240" y2="118" marker-end="url(#af-fail)"/>
 <rect class="box" x="155" y="120" width="170" height="36"/>
 <text x="240" y="143">Agent reads the docs</text>
 <polyline class="edge" points="155,138 132,138 132,226"/>
@@ -44,14 +44,14 @@ connection to patient data.
 <text x="118" y="178" text-anchor="end">answer</text>
 <text x="118" y="204" text-anchor="end">ask to clarify</text>
 <text x="118" y="230" text-anchor="end">say it cannot answer</text>
-<line class="edge red" x1="240" y1="156" x2="240" y2="176" marker-end="url(#af-red)"/>
+<line class="edge fail" x1="240" y1="156" x2="240" y2="176" marker-end="url(#af-fail)"/>
 <rect class="box" x="170" y="178" width="140" height="32"/>
 <text x="240" y="199">Draft query plan</text>
-<line class="edge red" x1="240" y1="210" x2="240" y2="228" marker-end="url(#af-red)"/>
+<line class="edge fail" x1="240" y1="210" x2="240" y2="228" marker-end="url(#af-fail)"/>
 <polygon class="box" points="240,230 310,258 240,286 170,258"/>
 <text x="240" y="262">validator</text>
-<text class="red" x="318" y="262" text-anchor="start">passes</text>
-<line class="edge red" x1="240" y1="286" x2="240" y2="304" marker-end="url(#af-red)"/>
+<text class="fail" x="318" y="262" text-anchor="start">passes</text>
+<line class="edge fail" x1="240" y1="286" x2="240" y2="304" marker-end="url(#af-fail)"/>
 <rect class="box" x="170" y="306" width="140" height="32"/>
 <text x="240" y="327">Compiler writes SQL</text>
 <rect class="box apart" x="10" y="292" width="120" height="46"/>
@@ -61,11 +61,11 @@ connection to patient data.
 
 ## My part
 
-The validator passes a query plan built from the wrong table, and the red path shows this case.
+The validator passes a query plan built from the wrong table, and the orange path shows this case.
 I built the benchmark that measures this failure. It traced 82.4% of top-5 retrieval misses to
 vocabulary mismatch:
 
-![Diagram of an invented schema entry, 'Readmission flag: marks a stay that follows a recent discharge', between two questions that ask for the same count. The question 'Readmission flag count per stay' shares three words with the entry. The question 'How many patients came back soon after they went home?' shares no word with it, and red lines pair its phrases with entry words of the same meaning. A keyword search finds no word in the entry to match the business question.](../../assets/figures/northwell/term_overlap.svg)
+![Diagram of an invented schema entry, 'Readmission flag: marks a stay that follows a recent discharge', between two questions that ask for the same count. The question 'Readmission flag count per stay' shares three words with the entry. The question 'How many patients came back soon after they went home?' shares no word with it, and orange lines pair its phrases with entry words of the same meaning. A keyword search finds no word in the entry to match the business question.](../../assets/figures/northwell/term_overlap.svg)
 
 A keyword search finds no word to match in the business question. I fused BM25 full-text search
 with dense-vector retrieval, and hit@5 rose from 53.8% to 75% across about 250 analyst queries.
@@ -80,6 +80,6 @@ that reports on the same questions.
 I tied for first with a blend of CatBoost and TabNet. I grouped validation folds so passengers who
 travelled together stayed in one fold:
 
-![Two panels of validation folds for the passengers in the training file's first eight travel groups with more than one passenger. Under the plain stratified split, six of the eight groups have members in two or more folds, shown as red zigzags. Under the grouped split, each group sits in one fold.](../../assets/figures/northwell/group_folds.svg)
+![Two panels of validation folds for the passengers in the training file's first eight travel groups with more than one passenger. Under the plain stratified split, six of the eight groups have members in two or more folds, shown as orange zigzags. Under the grouped split, each group sits in one fold.](../../assets/figures/northwell/group_folds.svg)
 
 The plain split sends six of the eight groups across folds.

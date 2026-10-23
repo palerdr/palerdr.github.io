@@ -38,7 +38,7 @@ def per_set_stimulus(data: dict) -> None:
     x = range(1, 7)
     for ax, row in zip(axes, rows):
         values = [s["stimulus"] for s in row["sets"]]
-        colors = [style.CONTEXT] * 3 + [style.RED] * 3
+        colors = [style.BLUE_LIGHT] * 3 + [style.BLUE] * 3
         ax.bar(x, values, width=0.62, color=colors, linewidth=0)
         ax.set_xticks(list(x))
         ax.set_xlim(0.4, 6.6)
@@ -70,9 +70,9 @@ def week_timeline(data: dict) -> None:
     ys = list(range(len(rows)))[::-1]
     for y, row in zip(ys, rows):
         for lo, hi in row["windows"]:
-            ax.barh(y, hi - lo, left=lo, height=h, color=style.GRID, linewidth=0)
+            ax.barh(y, hi - lo, left=lo, height=h, color=style.BLUE_LIGHT, linewidth=0)
         for lo, hi in row["idle"]:
-            ax.barh(y, hi - lo, left=lo, height=h, color=style.RED, linewidth=0)
+            ax.barh(y, hi - lo, left=lo, height=h, color=style.ORANGE, linewidth=0)
             label = f"{hi - lo} h idle" if y == ys[0] else f"{hi - lo} h"
             ax.text((lo + hi) / 2, y + h / 2 + 0.06, label, ha="center", va="bottom",
                     fontsize=11.5, color=style.INK)
@@ -83,7 +83,7 @@ def week_timeline(data: dict) -> None:
                     fontsize=11.5, color=style.INK)
         ax.text(176, y, f"{row['atrophy']:.3f}", ha="left", va="center",
                 fontsize=12, color=style.INK)
-    # Name the grey mark once, in the top row.
+    # Name the window mark once, in the top row.
     lo, hi = rows[0]["windows"][0]
     ax.text((lo + hi) / 2, ys[0] + h / 2 + 0.06, f"{hi - lo} h window", ha="center",
             va="bottom", fontsize=11.5, color=style.INK)

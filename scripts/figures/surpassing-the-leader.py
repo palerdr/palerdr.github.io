@@ -20,6 +20,8 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.cm import ScalarMappable
+from matplotlib.colors import BoundaryNorm, ListedColormap
 
 import style
 
@@ -42,10 +44,10 @@ def opening_strategies() -> None:
     fig, ax = plt.subplots(figsize=(style.WIDTH, 3.0), layout="constrained")
     # A log axis holds the 27.3 percent spikes and the 0.6 to 2.1 percent curves on one scale.
     ax.set_yscale("log")
-    ax.plot(second[1:], drop[1:], color=style.RED, lw=1.5)
-    ax.plot(second[:-1], check[:-1], color=style.INK, lw=1.5)
-    ax.plot([1], [drop[0]], "o", ms=7, color=style.RED, mec=style.PAPER, mew=1.5, zorder=4)
-    ax.plot([60], [check[-1]], "o", ms=7, color=style.INK, mec=style.PAPER, mew=1.5, zorder=4)
+    ax.plot(second[1:], drop[1:], color=style.BLUE, lw=1.5)
+    ax.plot(second[:-1], check[:-1], color=style.ORANGE, lw=1.5)
+    ax.plot([1], [drop[0]], "o", ms=7, color=style.BLUE, mec=style.PAPER, mew=1.5, zorder=4)
+    ax.plot([60], [check[-1]], "o", ms=7, color=style.ORANGE, mec=style.PAPER, mew=1.5, zorder=4)
     ax.text(3, drop[0], f"Dropper: {drop[0]:.1f}% on second 1", va="center", fontsize=NOTE)
     ax.text(58, check[-1], f"Checker: {check[-1]:.1f}% on second 60", va="center", ha="right", fontsize=NOTE)
     ax.text(40, drop[39] * 1.18, "Dropper", ha="center", va="bottom", fontsize=NOTE)
@@ -62,18 +64,34 @@ def opening_strategies() -> None:
 
 
 def revival_map() -> None:
-    """Where one player can still survive an injection: p(s, t) > 0 in red, p = 0 in grey."""
+    """One player's revival chance p(s, t) in bands of 0.2 on the blue ramp, p = 0 in grey."""
     c = json.loads((DATA / "revival.json").read_text(encoding="ascii"))
     edge = c["max_s_plus_t"]
     top = c["s_max"]
 
+    def at_least(level: float) -> list[tuple[float, float]]:
+        """Outline of the region where p(s, t) >= level, from p(s, t) = p0 (1 - s/240) 0.75^(t/60)."""
+        # p > 0 exactly when s <= 239 and s + t <= 240: the triangle under the line s + t = 240.
+        if level == 0:
+            return [(0, 0), (edge, 0), (0, edge)]
+        s = np.linspace(0, c["s_scale"] * (1 - level / c["p0"]), 100)
+        t = c["t_scale"] * np.log(level / (c["p0"] * (1 - s / c["s_scale"]))) / np.log(c["t_base"])
+        t = np.minimum(t, edge - s)
+        return [(0, 0), *zip(s[::-1], t[::-1])]
+
     fig, ax = plt.subplots(figsize=(style.WIDTH, 3.1), layout="constrained")
     ax.add_patch(plt.Rectangle((0, 0), top, top, color=style.GRID, lw=0, zorder=1))
-    # p > 0 exactly when s <= 239 and s + t <= 240: the triangle under the line s + t = 240.
-    ax.add_patch(plt.Polygon([(0, 0), (edge, 0), (0, edge)], closed=True, color=style.RED, lw=0, zorder=2))
-    ax.text(50, 60, "revival possible, $p>0$", ha="left", va="center", fontsize=NOTE, color=style.PAPER, zorder=3)
+    # Each band lies over the one below it, so the visible part of a polygon is its band.
+    levels = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
+    for level, color in zip(levels, style.BLUES):
+        ax.add_patch(plt.Polygon(at_least(level), closed=True, color=color, lw=0, zorder=2))
+    ramp = ScalarMappable(BoundaryNorm(levels, len(style.BLUES)), ListedColormap(style.BLUES))
+    bar = fig.colorbar(ramp, ax=ax, ticks=levels, aspect=24, pad=0.03)
+    bar.set_label("Revival chance $p$")
+    bar.outline.set_visible(False)
+    bar.ax.tick_params(length=0)
     ax.text(215, 200, "$p=0$", ha="center", va="center", fontsize=13, zorder=3)
-    # On the grey side of the edge, clear of the red.
+    # On the grey side of the edge, clear of the bands.
     ax.text(160, 100, "$s+t=240$", rotation=-45, rotation_mode="anchor", ha="center", va="bottom",
             fontsize=NOTE, transform_rotates_text=True, zorder=3)
     ax.set_xlim(0, top)
@@ -93,10 +111,12 @@ def round_payoffs() -> None:
 
     fig, ax = plt.subplots(figsize=(style.WIDTH, 2.9), layout="constrained")
     ax.hlines(0.5, 0, 59, color=style.AXIS, lw=0.75, zorder=1)
-    ax.hlines(fail, 0, 59, color=style.INK, lw=1.5, zorder=2)
-    ax.plot(lag, success, color=style.RED, lw=1.5, zorder=3)
+    # A failed check is the Dropper's round and a successful one is the Checker's,
+    # so each line takes that player's colour from the other figures.
+    ax.hlines(fail, 0, 59, color=style.BLUE, lw=1.5, zorder=2)
+    ax.plot(lag, success, color=style.ORANGE, lw=1.5, zorder=3)
     for x, y in ((0, success[0]), (59, success[-1])):
-        ax.plot([x], [y], "o", ms=7, color=style.RED, mec=style.PAPER, mew=1.5, zorder=4)
+        ax.plot([x], [y], "o", ms=7, color=style.ORANGE, mec=style.PAPER, mew=1.5, zorder=4)
     ax.text(1.5, success[0], f"{success[0]:.3f}", va="center", fontsize=NOTE)
     ax.text(57.5, success[-1] + 0.004, f"{success[-1]:.3f}", ha="right", va="bottom", fontsize=NOTE)
     ax.text(30, success[30] - 0.012, "check succeeds, $c\\geq d$: $S_{c-d}$", ha="left", va="top", fontsize=NOTE)
@@ -123,15 +143,15 @@ def value_by_poison() -> None:
 
     fig, ax = plt.subplots(figsize=(style.WIDTH, 2.9), layout="constrained")
     ax.hlines(0.5, 0, 298, color=style.AXIS, lw=0.75, zorder=1)
-    ax.plot(d["checker_s"][other], d["dropper_win"][other], color=style.INK, lw=1.5, zorder=2)
-    ax.plot(d["dropper_s"][own], d["dropper_win"][own], color=style.RED, lw=1.5, zorder=3)
+    ax.plot(d["checker_s"][other], d["dropper_win"][other], color=style.ORANGE, lw=1.5, zorder=2)
+    ax.plot(d["dropper_s"][own], d["dropper_win"][own], color=style.BLUE, lw=1.5, zorder=3)
     ax.plot([0], [root], "o", ms=7, color=style.INK, mec=style.PAPER, mew=1.5, zorder=5, clip_on=False)
-    ax.plot([ahead], [0.5], "o", ms=7, color=style.RED, mec=style.PAPER, mew=1.5, zorder=5)
-    # Above the black line, which reaches 0.74 only near 75 s, with a leader down to the start.
+    ax.plot([ahead], [0.5], "o", ms=7, color=style.BLUE, mec=style.PAPER, mew=1.5, zorder=5)
+    # Above the orange line, which reaches 0.74 only near 75 s, with a leader down to the start.
     ax.annotate(f"start: {root:.4f}", xy=(0, root), xytext=(8, 0.74), ha="left", va="bottom",
                 fontsize=NOTE, annotation_clip=False,
                 arrowprops=dict(arrowstyle="-", color=style.INK, lw=0.75, relpos=(0, 0), shrinkA=1, shrinkB=5))
-    # In the gap between the 0.5 line and the black line.
+    # In the gap between the 0.5 line and the orange line.
     ax.text(ahead + 6, 0.515, f"even at {ahead} s", ha="left", va="bottom", fontsize=NOTE)
     ax.text(150, 0.93, "Checker's cylinder fills", ha="center", va="bottom", fontsize=NOTE)
     ax.text(150, 0.24, "Dropper's cylinder fills", ha="left", va="bottom", fontsize=NOTE)
@@ -151,7 +171,7 @@ def leap_minutes() -> None:
     fig, (top, low) = plt.subplots(2, 1, sharex=True, figsize=(style.WIDTH, 3.5), layout="constrained",
                                    gridspec_kw={"height_ratios": [1, 1]})
     top.hlines(0.5, 44, 59, color=style.AXIS, lw=0.75, zorder=1)
-    top.plot(minute, d["hal_win"], color=style.INK, lw=1.5, marker="o", ms=5.5, mec=style.PAPER, mew=1.0)
+    top.plot(minute, d["hal_win"], color=style.BLUE, lw=1.5, marker="o", ms=5.5, mec=style.PAPER, mew=1.0)
     top.set_ylim(0, 1)
     top.set_yticks([0, 0.5, 1])
     top.set_ylabel("Hal wins")
@@ -159,8 +179,8 @@ def leap_minutes() -> None:
     top.text(minute[lo], d["hal_win"][lo] - 0.07, f"{d['hal_win'][lo]:.2f}", ha="center", va="top", fontsize=NOTE)
     top.text(minute[hi], d["hal_win"][hi] + 0.07, f"{d['hal_win'][hi]:.2f}", ha="center", va="bottom", fontsize=NOTE)
 
-    low.plot(minute, d["drop_second_1"], color=style.RED, lw=1.5, marker="o", ms=5.5, mec=style.PAPER, mew=1.0)
-    low.plot(minute, d["drop_second_2"], color=style.INK, lw=1.5, marker="o", ms=5.5, mec=style.PAPER, mew=1.0)
+    low.plot(minute, d["drop_second_1"], color=style.BLUE, lw=1.5, marker="o", ms=5.5, mec=style.PAPER, mew=1.0)
+    low.plot(minute, d["drop_second_2"], color=style.AQUA, lw=1.5, marker="o", ms=5.5, mec=style.PAPER, mew=1.0)
     low.set_ylim(-0.05, 1.05)
     low.set_yticks([0, 0.5, 1])
     low.set_ylabel("Drop weight")

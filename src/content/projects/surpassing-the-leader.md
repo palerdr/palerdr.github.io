@@ -37,10 +37,10 @@ against its evidence and followed the arithmetic where they conflict.
 ## The game
 
 Each round, the Dropper picks a second $d$ and the Checker picks a second $c$, both from 1 to 60
-and at the same time. The check fails when $c<d$. The Checker then dies and can revive only in
-the red region:
+and at the same time. The check fails when $c<d$. The Checker then dies and may revive, with
+lower odds for more poison and more time dead:
 
-![Two flat regions over cylinder s and time dead t, each from 0 to 300 seconds: red under the line s + t = 240, where a revival is possible, and grey above it, where the odds are zero.](../../assets/figures/surpassing-the-leader/revival-regions.svg)
+![Map of one player's revival chance p over cylinder s and time dead t, each from 0 to 300 seconds. Under the line s + t = 240, blue bands of width 0.2 darken toward 0.95 at s = 0, t = 0, and p falls as s or t grows. Above the line p is zero, shown in grey.](../../assets/figures/surpassing-the-leader/revival-regions.svg)
 
 The manga gives no revival rate, so I chose one. The 0.5449 result depends on that choice.
 
@@ -81,7 +81,7 @@ I wrote the first sweep in Rust and in Python, and the two agreed byte for byte.
 
 The first Dropper wins with probability 0.5449:
 
-![Line chart of the Dropper's win probability from the start value 0.5449. When the Checker's cylinder fills, the black line rises toward 1. When the Dropper's own cylinder fills, the red line falls, crosses even odds at 16 seconds, and is close to 0 by 240 seconds.](../../assets/figures/surpassing-the-leader/value-by-poison.svg)
+![Line chart of the Dropper's win probability from the start value 0.5449. When the Checker's cylinder fills, the orange line rises toward 1. When the Dropper's own cylinder fills, the blue line falls, crosses even odds at 16 seconds, and is close to 0 by 240 seconds.](../../assets/figures/surpassing-the-leader/value-by-poison.svg)
 
 Going first is worth about 16 seconds of poison.
 

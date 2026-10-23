@@ -1193,7 +1193,7 @@ L 369.59146 8.844703
 L 396.300396 8.667159 
 L 447.047376 8.6325 
 L 447.047376 8.6325 
-" clip-path="url(#padb16ddd51)" style="fill: none; stroke: #0a0a0a; stroke-width: 1.5; stroke-linecap: round"/>
+" clip-path="url(#padb16ddd51)" style="fill: none; stroke: #eb6834; stroke-width: 1.5; stroke-linecap: round"/>
    </g>
    <g id="patch_3">
     <path d="M 49.084219 172.117266 
@@ -1229,7 +1229,7 @@ L 401.642184 171.918959
 L 420.33844 172.088492 
 L 447.047376 172.117266 
 L 447.047376 172.117266 
-" clip-path="url(#padb16ddd51)" style="fill: none; stroke: #c0142a; stroke-width: 1.5; stroke-linecap: round"/>
+" clip-path="url(#padb16ddd51)" style="fill: none; stroke: #2a78d6; stroke-width: 1.5; stroke-linecap: round"/>
    </g>
    <g id="patch_5">
     <path d="M 58.782144 54.080825 
@@ -1497,7 +1497,7 @@ z
    </g>
    <g id="line2d_15">
     <defs>
-     <path id="m4e6a439298" d="M 0 3.5 
+     <path id="m7d15f13fc1" d="M 0 3.5 
 C 0.928211 3.5 1.81853 3.131218 2.474874 2.474874 
 C 3.131218 1.81853 3.5 0.928211 3.5 0 
 C 3.5 -0.928211 3.131218 -1.81853 2.474874 -2.474874 
@@ -1510,7 +1510,7 @@ z
 " style="stroke: #ffffff; stroke-width: 1.5"/>
     </defs>
     <g clip-path="url(#padb16ddd51)">
-     <use xlink:href="#m4e6a439298" x="70.451368" y="90.374883" style="fill: #c0142a; stroke: #ffffff; stroke-width: 1.5"/>
+     <use xlink:href="#m7d15f13fc1" x="70.451368" y="90.374883" style="fill: #2a78d6; stroke: #ffffff; stroke-width: 1.5"/>
     </g>
    </g>
   </g>

@@ -125,9 +125,9 @@ def term_overlap() -> None:
 
     box_top, box_bottom = y_doc + 0.29, y_doc - 0.13
     for qi, di in SAME_WORD:
-        ax.plot([mid(a, qi), mid(doc, di)], [y_a - 0.07, box_top], color=style.CONTEXT, lw=1.5)
+        ax.plot([mid(a, qi), mid(doc, di)], [y_a - 0.07, box_top], color=style.BLUE, lw=1.5)
     for qi, di in SAME_MEANING:
-        ax.plot([mid(b, qi), mid(doc, di)], [y_b + cap + 0.07, box_bottom], color=style.RED, lw=1.5)
+        ax.plot([mid(b, qi), mid(doc, di)], [y_b + cap + 0.07, box_bottom], color=style.ORANGE, lw=1.5)
 
     # Each link label sits just right of its rightmost link.
     x_word = max(mid(a, qi) for qi, _ in SAME_WORD) + 0.16
@@ -171,7 +171,7 @@ def group_folds() -> None:
             gx = [xs[i] for i in idx]
             gy = [rows[i][key] for i in idx]
             split = len(set(gy)) > 1
-            color = style.RED if split else style.CONTEXT
+            color = style.ORANGE if split else style.BLUE
             ax.plot(
                 gx,
                 gy,
@@ -197,8 +197,8 @@ def group_folds() -> None:
         ax.spines["bottom"].set_visible(False)
 
     handles = [
-        Line2D([], [], color=style.RED, lw=1.5, marker="o", ms=6.5, mec=style.PAPER, mew=0),
-        Line2D([], [], color=style.CONTEXT, lw=1.5, marker="o", ms=6.5, mec=style.PAPER, mew=0),
+        Line2D([], [], color=style.ORANGE, lw=1.5, marker="o", ms=6.5, mec=style.PAPER, mew=0),
+        Line2D([], [], color=style.BLUE, lw=1.5, marker="o", ms=6.5, mec=style.PAPER, mew=0),
     ]
     axes[0].legend(
         handles,

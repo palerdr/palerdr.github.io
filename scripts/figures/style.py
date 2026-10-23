@@ -1,9 +1,9 @@
 """The shared look of the write-up figures.
 
 Every figure script imports this module, calls `use()`, and writes its figure
-with `save()`. The figures use the site's ink for text, one red for the series
-the figure is about, grey for context, PT Sans, and hairline axes. Text leaves
-as paths, so an SVG looks the same in any browser without the web font.
+with `save()`. The figures use the site's ink for all text, three series hues
+in a fixed order, a blue ramp for magnitude, PT Sans, and hairline axes. Text
+leaves as paths, so an SVG looks the same in any browser without the web font.
 
 Run a figure script from the site root:
 
@@ -27,16 +27,22 @@ SITE = HERE.parents[1]
 ASSETS = SITE / "src" / "assets" / "figures"
 PROJECTS = SITE.parent
 
-# The site's tokens (src/styles/global.css). All text is INK. Red and black carry
-# the figures: red for the series a paragraph is about, black for the one it is
-# set against.
-# Figures use lines, points and flat marks, and no color gradients.
+# The site's tokens (src/styles/global.css). All text is INK.
 INK = "#0a0a0a"
 AXIS = "#c9c9c4"
 GRID = "#e3e3e0"
 PAPER = "#ffffff"
-RED = "#c0142a"
-CONTEXT = INK
+
+# Series hues, taken in this order. The three pass the colour-blind and
+# normal-vision separation checks as a set against PAPER. AQUA is below 3:1
+# on PAPER, so a figure that uses it labels its line directly.
+BLUE = "#2a78d6"
+ORANGE = "#eb6834"
+AQUA = "#1baf7a"
+# A lighter step of BLUE for context marks of the blue series.
+BLUE_LIGHT = "#86b6ef"
+# One-hue ramp, light to dark, for a magnitude drawn as flat bands.
+BLUES = ["#86b6ef", "#5598e7", "#2a78d6", "#1c5cab", "#104281"]
 
 # The column shows a figure at up to 36rem, so 6.4 in keeps 12.5 pt text near
 # the body size on a laptop.

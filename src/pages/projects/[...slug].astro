@@ -267,7 +267,7 @@ const showCollapse = entry.id === 'surpassing-the-leader';
     font-family: var(--font-body), ui-serif, Georgia, serif;
   }
 
-  /* Northwell's agent pipeline. The red path is the wrong-table case. */
+  /* Northwell's agent pipeline. The orange path is the wrong-table case. */
   .body :global(.agent-flow) {
     max-width: 26rem;
     margin-inline: auto;
@@ -308,18 +308,18 @@ const showCollapse = entry.id === 'surpassing-the-leader';
     fill: var(--ink);
   }
 
-  .body :global(.agent-flow .red) {
-    stroke: var(--leap);
+  .body :global(.agent-flow .fail) {
+    stroke: var(--fig-orange);
     stroke-width: 2.5;
   }
 
-  .body :global(.agent-flow .head.red) {
-    fill: var(--leap);
+  .body :global(.agent-flow .head.fail) {
+    fill: var(--fig-orange);
     stroke: none;
   }
 
-  .body :global(.agent-flow text.red) {
-    fill: var(--leap);
+  .body :global(.agent-flow text.fail) {
+    fill: var(--ink);
     stroke: none;
     font-weight: 700;
   }

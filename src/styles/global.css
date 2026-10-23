@@ -40,6 +40,11 @@
   --tint: #0a0a0a;
   --leap: #c0142a;
 
+  /* Figure hues, the same values as scripts/figures/style.py. */
+  --fig-blue: #2a78d6;
+  --fig-blue-light: #86b6ef;
+  --fig-orange: #eb6834;
+
   /* Four names, one face. Components keep their semantic variable. */
   --font-display: var(--font-body);
   --font-sans: var(--font-body);
